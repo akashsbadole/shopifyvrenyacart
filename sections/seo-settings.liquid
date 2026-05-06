@@ -1,0 +1,44 @@
+{% comment %}SEO Settings Section - LUXE Theme{% endcomment %}
+
+<div class="seo-settings" style="display: none;">
+  <div class="seo-meta-tags">
+    <meta name="description" content="{{ page_description | default: shop.description | truncate: 160 }}">
+    <meta name="keywords" content="{{ section.settings.meta_keywords | default: '' }}">
+    
+    {% if template == 'index' %}
+      <meta name="robots" content="index, follow">
+    {% elsif template == 'product' %}
+      <meta name="robots" content="index, follow">
+    {% elsif template == 'collection' %}
+      <meta name="robots" content="index, follow">
+    {% elsif template == 'article' %}
+      <meta name="robots" content="index, follow">
+    {% elsif template == '404' %}
+      <meta name="robots" content="noindex">
+    {% else %}
+      <meta name="robots" content="index, follow">
+    {% endif %}
+    
+    <link rel="canonical" href="{{ canonical_url }}">
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "SEO Settings",
+  "class": "section-seo",
+  "settings": [
+    { "type": "header", "content": "SEO Configuration" },
+    { "type": "text", "id": "meta_keywords", "label": "Meta Keywords", "info": "Comma-separated keywords" },
+    { "type": "checkbox", "id": "enable_schema", "label": "Enable Schema.org", "default": true },
+    { "type": "checkbox", "id": "enable_social_tags", "label": "Enable Social Meta Tags", "default": true },
+    { "type": "header", "content": "Homepage SEO" },
+    { "type": "text", "id": "homepage_title", "label": "Homepage Title", "info": "Override default title" },
+    { "type": "textarea", "id": "homepage_description", "label": "Homepage Description" },
+    { "type": "header", "content": "Product SEO" },
+    { "type": "checkbox", "id": "product_schema_rating", "label": "Show Product Ratings in Schema", "default": true },
+    { "type": "checkbox", "id": "product_schema_offers", "label": "Show Price Availability", "default": true }
+  ],
+  "presets": [{ "name": "SEO Settings" }]
+}
+{% endschema %}

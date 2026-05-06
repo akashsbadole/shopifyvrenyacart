@@ -1,85 +1,185 @@
-{% comment %}
-  Schema.org Structured Data - SEO Optimization
-{% endcomment %}
+{% comment %}SEO Schema - JSON-LD Structured Data - LUXE Theme{% endcomment %}
 
-{% if template contains 'product' %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": {{ product.title | json }},
-    "description": {{ product.description | strip_html | truncate: 180 | json }},
-    "url": {{ request.url | prepend: shop.url | json }},
-    {%- if product.featured_media -%}
-    "image": [
-      {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }}
-    ],
-    {%- endif -%}
-    "brand": {
-      "@type": "Brand",
-      "name": {{ product.vendor | json }}
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": {{ product.price | money_without_currency | json }},
-      "priceCurrency": {{ cart.currency.iso_code | json }},
-      "availability": {{ product.available | json }},
-      "seller": {
-        "@type": "Organization",
-        "name": {{ shop.name | json }}
-      }
-    }
-    {%- if product.metafields.reviews and product.metafields.reviews.rating -%},
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": {{ product.metafields.reviews.rating | json }},
-      "reviewCount": {{ product.metafields.reviews.count | json }}
-    }
-    {%- endif -%}
-  }
-  </script>
-{% elsif template contains 'collection' %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": {{ collection.title | json }},
-    "description": {{ collection.description | strip_html | truncate: 180 | json }},
-    "url": {{ request.url | prepend: shop.url | json }}
-  }
-  </script>
-{% elsif template contains 'article' %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": {{ article.title | json }},
-    "articleSection": {{ blog.title | json }},
-    "datePublished": {{ article.published_at | json }},
-    "dateModified": {{ article.updated_at | json }},
-    "author": {
-      "@type": "Person",
-      "name": {{ article.author | json }}
-    },
-    "publisher": {
+{%- if template contains 'product' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 200 | json }},
+  "url": {{ request.url | json }},
+  {%- if product.featured_media -%}
+  "image": [
+    {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+    {{ product.featured_media | image_url: width: 2048 | prepend: 'https:' | json }}
+  ],
+  {%- endif -%}
+  "sku": {{ product.selected_or_first_available_variant.sku | json | default: product.id | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | default: shop.name | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ request.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.selected_or_first_available_variant.price | money_without_currency | json }},
+    "priceValidUntil": "{{ 'now' | date: '%Y-12-31' }}",
+    "availability": {% if product.available %}"https://schema.org/InStock"{% else %}"https://schema.org/OutOfStock"{% endif %},
+    "seller": {
       "@type": "Organization",
       "name": {{ shop.name | json }}
-    },
-    "url": {{ request.url | prepend: shop.url | json }}
+    }
   }
-  </script>
-{% elsif template contains 'index' %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
+  {%- if product.metafields.reviews -%}
+  ,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value | default: 0 }}",
+    "reviewCount": "{{ product.metafields.reviews.count.value | default: 0 }}"
+  }
+  {%- endif -%}
+}
+</script>
+
+{%- elsif template contains 'collection' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ collection.title | json }},
+  "description": {{ collection.description | strip_html | truncate: 200 | json }},
+  "url": {{ request.url | json }},
+  {%- if collection.image -%}
+  "image": {{ collection.image | image_url: width: 1200 | prepend: 'https:' | json }},
+  {%- endif -%}
+  "mainEntity": {
+    "@type": "Thing",
+    "name": {{ collection.title | json }}
+  }
+}
+</script>
+
+{%- elsif template contains 'article' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  "articleSection": {{ blog.title | json }},
+  "datePublished": {{ article.published_at | json }},
+  "dateModified": {{ article.updated_at | json }},
+  "author": {
+    "@type": "Person",
+    "name": {{ article.author | json }}
+  },
+  "publisher": {
+    "@type": "Organization",
     "name": {{ shop.name | json }},
-    "url": {{ shop.url | json }},
-"potentialAction": {
-        "@type": "SearchAction",
-        "target": "{{ shop.url }}/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ settings.logo | image_url: width: 200 | prepend: 'https:' | default: shop.url | json }}
+    }
+  },
+  "description": {{ article.excerpt | strip_html | truncate: 200 | json }},
+  "mainEntityOfPage": {{ request.url | json }},
+  {%- if article.image -%}
+  "image": {{ article.image | image_url: width: 1200 | prepend: 'https:' | json }}
+  {%- endif -%}
+}
+</script>
+
+{%- elsif template == 'index' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "description": {{ shop.description | json }},
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ shop.name | json }}
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ shop.url }}/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "sameAs": [
+    {%- if settings.social_facebook_link != blank -%}{{ settings.social_facebook_link | json }},{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}{{ settings.social_instagram_link | json }},{%- endif -%}
+    {%- if settings.social_twitter_link != blank -%}{{ settings.social_twitter_link | json }}{%- endif -%}
+  ]
+}
+</script>
+
+{%- elsif template == 'search' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SearchResultsPage",
+  "name": "Search Results",
+  "url": {{ request.url | json }},
+  "query": {{ search.terms | json }}
+}
+</script>
+{%- endif -%}
+
+{% comment %}Organization Schema for LocalBusiness{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "description": {{ shop.description | json }},
+  "logo": "https:{{ settings.logo | image_url: width: 200 | default: 'cdn.shopify.com/s/files/1/0000/0000/logo.png' }}",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": {{ shop.phone | json | default: "" }},
+    "contactType": "customer service",
+    "email": {{ shop.email | json | default: "support@luxe.com" }},
+    "availableLanguage": ["English"]
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "US"
+  },
+  "sameAs": [
+    {%- if settings.social_facebook_link != blank -%}{{ settings.social_facebook_link | json }},{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}{{ settings.social_instagram_link | json }},{%- endif -%}
+    {%- if settings.social_twitter_link != blank -%}{{ settings.social_twitter_link | json }},{%- endif -%}
+    {%- if settings.social_youtube_link != blank -%}{{ settings.social_youtube_link | json }},{%- endif -%}
+    {%- if settings.social_pinterest_link != blank -%}{{ settings.social_pinterest_link | json }}{%- endif -%}
+  ],
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ shop.url }}/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
   }
-  </script>
-{% endif %}
+}
+</script>
+
+{% comment %}Website Schema with SiteNavigationElement{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "url": {{ shop.url | json }},
+  "name": {{ shop.name | json }},
+  "description": {{ shop.description | json }},
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ shop.name | json }}
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ shop.url }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>

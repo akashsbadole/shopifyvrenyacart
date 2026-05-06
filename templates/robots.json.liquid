@@ -1,0 +1,67 @@
+# 
+#  Robots.txt for LUXE Theme - Shopify
+# 
+
+User-agent: *
+{% if template == '404' or template == 'cart' or template == 'customers/account' or template contains 'customers' or template == 'search' %}
+Disallow:
+{% else %}
+Allow: /
+{% endif %}
+
+# Sitemaps
+Sitemap: {{ shop.url }}/sitemap.xml
+
+# Block common paths
+Disallow: /admin/
+Disallow: /assets/
+Disallow: /cart/
+Disallow: /carts/
+Disallow: /orders/
+Disallow: /checkouts/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /accounts/
+Disallow: /customers/
+Disallow: /customer/
+Disallow: /auth/
+Disallow: /password/
+Disallow: /reset/
+Disallow: /search/
+Disallow: /search?q=
+Disallow: /privacy/
+Disallow: /refund/
+Disallow: /terms/
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: msnbot
+Allow: /
+Crawl-delay: 1
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /

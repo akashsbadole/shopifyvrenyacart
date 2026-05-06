@@ -42,12 +42,24 @@
 
   {% render 'favicon' %}
 
-  <title>{{ page_title | escape }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}</title>
+  <title>{{ page_title | escape }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %} | {{ shop.name }}</title>
+  <meta name="description" content="{{ page_description | default: shop.description | truncate: 160 }}">
 
   {% render 'social-meta-tags' %}
   {% render 'seo-schema' %}
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
+  
+  {% comment %}Hreflang for International SEO{% endcomment %}
+  <link rel="alternate" hreflang="en" href="{{ canonical_url }}">
+  {% if request.locale == 'en' %}
+  <link rel="alternate" hreflang="x-default" href="{{ canonical_url }}">
+  {% endif %}
+  {% for locale in shop.enabled_locales %}
+    {% if locale.root_url != '/' %}
+    <link rel="alternate" hreflang="{{ locale.root_url | remove: '/' }}" href="{{ canonical_url | replace: request.locale.root_url, locale.root_url }}">
+    {% endif %}
+  {% endfor %}
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
