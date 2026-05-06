@@ -1,0 +1,92 @@
+<!doctype html>
+<html class="{{ request.body_html_class }}" lang="{{ request.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {% if template == 'product' %}
+  <meta name="robots" content="index, follow">
+  {% elsif template == 'article' %}
+  <meta name="robots" content="index, follow">
+  {% else %}
+  <meta name="robots" content="index, follow">
+  {% endif %}
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {% render 'favicon' %}
+
+  <title>{{ page_title | escape }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}</title>
+
+  {% render 'social-meta-tags' %}
+  {% render 'seo-schema' %}
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    if (window.Shopify && window.Shopify.designMode) {
+      document.documentElement.className += ' in-theme-editor';
+    }
+  </script>
+
+  {{ content_for_header }}
+
+  {% style %}
+    :root {
+      --color-primary: {{ settings.color_primary }};
+      --color-primary-hover: {{ settings.color_primary_hover }};
+      --color-background: {{ settings.color_background }};
+      --color-surface: {{ settings.color_surface }};
+      --color-surface-elevated: {{ settings.color_surface_elevated }};
+      --color-text-primary: {{ settings.color_text_primary }};
+      --color-text-secondary: {{ settings.color_text_secondary }};
+      --color-text-inverse: {{ settings.color_text_inverse }};
+      --color-border: {{ settings.color_border }};
+      --color-border-subtle: {{ settings.color_border_subtle }};
+      --color-error: {{ settings.color_error }};
+      --color-success: {{ settings.color_success }};
+      --color-warning: {{ settings.color_warning }};
+      --color-sale: {{ settings.color_sale }};
+
+      --font-heading: {{ settings.font_heading }};
+      --font-body: {{ settings.font_body }};
+
+      --container-width: {{ settings.container_width }}px;
+      --section-spacing: {{ settings.section_spacing }}px;
+      --grid-gutter: {{ settings.grid_gutter }}px;
+      --border-radius: {{ settings.border_radius }}px;
+    }
+  {% endstyle %}
+</head>
+
+<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] font-[var(--font-body)] antialiased{% if template == 'customers/account' or template == 'customers/order' %} account-page{% endif %}">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-[var(--color-surface)] px-4 py-2 rounded">
+    Skip to content
+  </a>
+
+  {% sections 'header-group' %}
+
+  <main id="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  {% sections 'overlay-group' %}
+
+  {%- comment -%} Async JS for performance {%- endcomment -%}
+  <script src="{{ 'theme.js' | asset_url }}" async></script>
+
+  <noscript>
+    <div class="fixed bottom-0 left-0 right-0 bg-[var(--color-primary)] text-[var(--color-text-inverse)] px-4 py-3 text-center">
+      Please enable JavaScript for the best experience.
+    </div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,193 @@
+{% comment %}
+  Booking Section - LUXE Theme
+  Local Business: Service appointment booking
+{% endcomment %}
+
+<section class="booking py-16" style="padding: var(--section-spacing) 0;">
+  <div class="container mx-auto px-6" style="max-width: var(--container-width);">
+    <div class="grid md:grid-cols-2 gap-12 items-start">
+      <div>
+        {%- if section.settings.heading != blank -%}
+          <h2 class="text-3xl font-bold mb-4">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="mb-6" style="color: var(--color-text-secondary);">{{ section.settings.description }}</p>
+        {%- endif -%}
+
+        <div class="booking__info space-y-4">
+          {%- if section.settings.address != blank -%}
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <div>
+                <p class="font-semibold">Address</p>
+                <p class="text-sm" style="color: var(--color-text-secondary);">{{ section.settings.address }}</p>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.phone != blank -%}
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.372 4.12a1 1 0 01-.54 1.264l-2.597 1.298a16.03 16.03 0 01-5.458 1.262 16.03 16.03 0 01-5.458-1.262L2.264 10.18A1 1 0 01.72 8.918L2.092 4.8A2 2 0 014.372 2.52H7.648a1 1 0 01.948.684l1.372 4.12a1 1 0 01-.54 1.264l-2.597 1.298a16.03 16.03 0 01-2.827 0z"/>
+              </svg>
+              <div>
+                <p class="font-semibold">Phone</p>
+                <p class="text-sm" style="color: var(--color-text-secondary);">{{ section.settings.phone }}</p>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.hours != blank -%}
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <div>
+                <p class="font-semibold">Hours</p>
+                <p class="text-sm" style="color: var(--color-text-secondary);">{{ section.settings.hours }}</p>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="booking__form">
+        <form class="space-y-4" onsubmit="submitBooking(event)">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Service</label>
+            <select class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+              <option value="">Select a service...</option>
+              {%- for i in (1..5) -%}
+                {%- assign service_key = 'service_' | append: i -%}
+                {%- if section.settings[service_key] != blank -%}
+                  <option value="{{ section.settings[service_key] }}">{{ section.settings[service_key] }}</option>
+                {%- endif -%}
+              {%- endfor -%}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Date</label>
+              <input type="date" class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Time</label>
+              <select class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+                <option value="">Select time...</option>
+                <option>9:00 AM</option>
+                <option>10:00 AM</option>
+                <option>11:00 AM</option>
+                <option>1:00 PM</option>
+                <option>2:00 PM</option>
+                <option>3:00 PM</option>
+                <option>4:00 PM</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Name</label>
+            <input type="text" class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Email</label>
+            <input type="email" class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Phone</label>
+            <input type="tel" class="w-full p-3 rounded" style="border: 1px solid var(--color-border);" required>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-4 font-semibold rounded"
+            style="background: var(--color-primary); color: var(--color-text-inverse);"
+          >
+            {{ section.settings.button_text | default: 'Book Appointment' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function submitBooking(e) {
+    e.preventDefault();
+    alert('Booking submitted! We will contact you to confirm.');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Booking",
+  "class": "section-booking",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Book an Appointment"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Schedule your visit with us."
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address",
+      "default": "123 Main Street, City, State 12345"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(555) 123-4567"
+    },
+    {
+      "type": "textarea",
+      "id": "hours",
+      "label": "Business Hours",
+      "default": "Mon-Fri: 9am-6pm\nSat: 10am-4pm"
+    },
+    {
+      "type": "text",
+      "id": "service_1",
+      "label": "Service 1",
+      "default": "Consultation"
+    },
+    {
+      "type": "text",
+      "id": "service_2",
+      "label": "Service 2",
+      "default": "Haircut"
+    },
+    {
+      "type": "text",
+      "id": "service_3",
+      "label": "Service 3"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Book Appointment"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Booking Form"
+    }
+  ]
+}
+{% endschema %}

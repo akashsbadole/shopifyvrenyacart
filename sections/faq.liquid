@@ -1,0 +1,64 @@
+{% comment %}
+  FAQ Section - vrenyaCart Theme
+{% endcomment %}
+
+<section class="faq py-16">
+  <div class="faq__container mx-auto px-6" style="max-width: 800px;">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="text-3xl font-bold text-center mb-8">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="faq__list space-y-4">
+      {%- for i in (1..section.settings.faq_count) -%}
+        {%- assign question_key = 'faq_question_' | append: i -%}
+        {%- assign answer_key = 'faq_answer_' | append: i -%}
+        
+        <details class="faq__item group" style="border: 1px solid var(--color-border); border-radius: var(--border-radius);">
+          <summary class="faq__question flex items-center justify-between p-4 cursor-pointer list-none">
+            <span class="font-semibold pr-4">{{ section.settings[question_key] }}</span>
+            <svg class="faq__icon w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="faq__answer px-4 pb-4" style="color: var(--color-text-secondary);">
+            {{ section.settings[answer_key] }}
+          </div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  details.faq__item summary {
+    list-style: none;
+  }
+  details.faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+  details.faq__item[open] .faq__icon {
+    transform: rotate(180deg);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "class": "section-faq",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently Asked Questions" },
+    { "type": "range", "id": "faq_count", "label": "Number of FAQs", "min": 3, "max": 10, "default": 5, "step": 1 },
+    { "type": "text", "id": "faq_question_1", "label": "Question 1" },
+    { "type": "richtext", "id": "faq_answer_1", "label": "Answer 1" },
+    { "type": "text", "id": "faq_question_2", "label": "Question 2" },
+    { "type": "richtext", "id": "faq_answer_2", "label": "Answer 2" },
+    { "type": "text", "id": "faq_question_3", "label": "Question 3" },
+    { "type": "richtext", "id": "faq_answer_3", "label": "Answer 3" },
+    { "type": "text", "id": "faq_question_4", "label": "Question 4" },
+    { "type": "richtext", "id": "faq_answer_4", "label": "Answer 4" },
+    { "type": "text", "id": "faq_question_5", "label": "Question 5" }
+  ],
+  "presets": [{ "name": "FAQ" }]
+}
+{% endschema %}

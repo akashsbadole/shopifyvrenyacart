@@ -1,0 +1,52 @@
+<div class="cart-express hidden md:block">
+  <p class="text-sm font-semibold mb-3">Express Checkout</p>
+  <div class="express-buttons grid grid-cols-2 gap-2">
+    {%- if section.settings.show_shop_pay -%}
+    <button type="button" class="express-btn flex items-center justify-center gap-2 py-3 px-4 rounded transition-opacity hover:opacity-90" style="background: #5B20BD; color: white;">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+      <span class="text-sm font-bold">Shop Pay</span>
+    </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_paypal -%}
+    <button type="button" class="express-btn flex items-center justify-center gap-2 py-3 px-4 rounded transition-opacity hover:opacity-90" style="background: #003087; color: white;">
+      <span class="text-sm font-bold">PayPal</span>
+    </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_gpay -%}
+    <button type="button" class="express-btn flex items-center justify-center gap-2 py-3 px-4 rounded transition-opacity hover:opacity-90" style="background: #4285F4; color: white;">
+      <span class="text-sm font-bold">G Pay</span>
+    </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_apple_pay -%}
+    <button type="button" class="express-btn flex items-center justify-center gap-2 py-3 px-4 rounded transition-opacity hover:opacity-90" style="background: #000000; color: white;">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 4.5l6 3v7l-6 3-6-3V9.5l6-3zm-1 5.5l4 2v4l-4 2-4-2v-4l4-2z"/></svg>
+      <span class="text-sm font-bold">Apple Pay</span>
+    </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_amazon -%}
+    <button type="button" class="express-btn flex items-center justify-center gap-2 py-3 px-4 rounded transition-opacity hover:opacity-90" style="background: #FF9900; color: black;">
+      <span class="text-sm font-bold">Amazon Pay</span>
+    </button>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Express Checkout",
+  "class": "section-express",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_shop_pay", "label": "Shop Pay", "default": true },
+    { "type": "checkbox", "id": "show_paypal", "label": "PayPal", "default": true },
+    { "type": "checkbox", "id": "show_gpay", "label": "Google Pay", "default": true },
+    { "type": "checkbox", "id": "show_apple_pay", "label": "Apple Pay", "default": true },
+    { "type": "checkbox", "id": "show_amazon", "label": "Amazon Pay", "default": true }
+  ],
+  "presets": [{ "name": "Express Checkout" }]
+}
+{% endschema %}

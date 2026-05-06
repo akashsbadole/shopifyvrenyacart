@@ -1,0 +1,60 @@
+{% comment %}Breadcrumbs - vrenyaCart Theme{% endcomment %}
+
+{% unless template == 'index' or template == 'cart' or template == 'list-collections' %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="flex items-center gap-2 text-sm" style="color: var(--color-text-secondary);">
+    <li>
+      <a href="{{ routes.root_url }}" class="hover:opacity-70">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+      </a>
+    </li>
+    
+    {% case template %}
+      {% when 'product' %}
+        {% if collection %}
+          <li><span class="text-[var(--color-border)]">/</span></li>
+          {% if collection.url %}
+            <li><a href="{{ collection.url }}" class="hover:opacity-70">{{ collection.title }}</a></li>
+          {% endif %}
+        {% endif %}
+        <li><span class="text-[var(--color-border)]">/</span></li>
+        <li><span style="color: var(--color-text-primary);">{{ product.title }}</span></li>
+        
+      {% when 'collection' %}
+        <li><span class="text-[var(--color-border)]">/</span></li>
+        <li><span style="color: var(--color-text-primary);">{{ collection.title }}</span></li>
+        
+      {% when 'blog' %}
+        <li><span class="text-[var(--color-border)]">/</span></li>
+        <li><a href="{{ blog.url }}" class="hover:opacity-70">{{ blog.title }}</a></li>
+        {% if article %}
+          <li><span class="text-[var(--color-border)]">/</span></li>
+          <li><span style="color: var(--color-text-primary);">{{ article.title }}</span></li>
+        {% endif %}
+        
+      {% when 'page' %}
+        <li><span class="text-[var(--color-border)]">/</span></li>
+        <li><span style="color: var(--color-text-primary);">{{ page.title }}</span></li>
+        
+      {% when 'search' %}
+        <li><span class="text-[var(--color-border)]">/</span></li>
+        <li><span style="color: var(--color-text-primary);">{{ 'general.search.title' | t }}</span></li>
+        
+    {% else %}
+      <li><span class="text-[var(--color-border)]">/</span></li>
+      <li><span style="color: var(--color-text-primary);">{{ page_title }}</span></li>
+    {% endcase %}
+  </ol>
+</nav>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "class": "section-breadcrumbs",
+  "settings": [],
+  "presets": [{ "name": "Breadcrumbs" }]
+}
+{% endschema %}

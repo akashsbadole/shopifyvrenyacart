@@ -1,0 +1,44 @@
+{% comment %}Waitlist - vrenyaCart Theme{% endcomment %}
+
+{% if product.available %}
+{% else %}
+<div class="waitlist" id="waitlist-{{ product.id }}">
+  <h3 class="text-lg font-semibold mb-2">{{ section.settings.heading | default: 'Notify Me When Available' }}</h3>
+  
+  {% form 'contact', class: 'waitlist-form' %}
+    <input type="hidden" name="contact[product]" value="{{ product.title }}">
+    <input type="hidden" name="contact[url]" value="{{ product.url }}">
+    
+    <div class="flex gap-2">
+      <input 
+        type="email" 
+        name="contact[email]" 
+        placeholder="{{ 'general.newsletter.email_label' | t }}"
+        required
+        class="flex-1 px-4 py-3 border rounded"
+        style="border-color: var(--color-border);">
+      
+      <button type="submit" class="px-6 py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">
+        {{ section.settings.button_text | default: 'Notify Me' }}
+      </button>
+    </div>
+    
+    {% if form.posted_successfully? %}
+      <p class="mt-2 text-sm" style="color: var(--color-success);">{{ section.settings.success_message | default: 'We will notify you when this product is back in stock!' }}</p>
+    {% endif %}
+  {% endform %}
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Waitlist",
+  "class": "section-waitlist",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Notify Me When Available", "label": "Heading" },
+    { "type": "text", "id": "button_text", "default": "Notify Me", "label": "Button Text" },
+    { "type": "text", "id": "success_message", "default": "We will notify you when this product is back in stock!", "label": "Success Message" }
+  ],
+  "presets": [{ "name": "Waitlist" }]
+}
+{% endschema %}

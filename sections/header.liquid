@@ -1,0 +1,187 @@
+{% comment %}
+  Header Section - LUXE Theme
+  Settings: https://shopify.dev/docs/themes/sections/theme-section-settings
+{% endcomment %}
+
+{%- style -%}
+  .header {
+    --header-height: 80px;
+  }
+
+  .header-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-transparent .header {
+    background-color: transparent;
+  }
+
+  {% if section.settings.header_sticky %}
+    .header-sticky .header {
+      background-color: rgb(255 255 255 / var(--header-bg-opacity, 0.95));
+      backdrop-filter: blur(8px);
+    }
+  {% endif %}
+
+  @media (max-width: 768px) {
+    .header {
+      --header-height: 64px;
+    }
+  }
+{%- endstyle -%}
+
+{%- if section.settings.header_transparent -%}
+{%- assign header_bg_opacity = 0 -%}
+{%- else -%}
+{%- assign header_bg_opacity = 0.95 -%}
+{%- endif -%}
+
+<div class="header-wrapper{% if section.settings.header_transparent %} header-transparent{% endif %}{% if section.settings.header_sticky %} header-sticky{% endif %}" style="--header-bg-opacity: {{ header_bg_opacity }}">
+  <header class="header bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)]">
+    <div class="header__container mx-auto px-6" style="max-width: var(--container-width);">
+      <div class="header__inner flex items-center justify-between h-[var(--header-height)]" style="gap: 2rem;">
+
+        {%- case section.settings.header_style -%}
+          {%- when 'minimal' -%}
+            {% render 'header-minimal' %}
+          {%- when 'classic' -%}
+            {% render 'header-classic' %}
+          {%- when 'centered' -%}
+            {% render 'header-centered' %}
+        {%- endcase -%}
+
+      </div>
+    </div>
+  </header>
+</div>
+
+{%- unless section.settings.header_style == 'minimal' -%}
+  {% render 'header-mega-menu' %}
+{%- endunless -%}
+
+{%- render 'header-search' -%}
+
+<script>
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header-wrapper');
+    if (header && window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else if (header) {
+      header.classList.remove('scrolled');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Style",
+      "default": "classic",
+      "options": [
+        {"value": "minimal", "label": "Minimal (Logo + Icons)"},
+        {"value": "classic", "label": "Classic"},
+        {"value": "centered", "label": "Centered"}
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "header_sticky",
+      "label": "Sticky on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "header_transparent",
+      "label": "Transparent on hero",
+      "default": false,
+      "info": "Requires hero section at top of page"
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Enable search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_wishlist",
+      "label": "Enable wishlist",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_account",
+      "label": "Enable account link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "label": "Enable language selector",
+      "default": true,
+      "info": "Shows language dropdown in header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_currency_selector",
+      "label": "Enable currency selector",
+      "default": true,
+      "info": "Shows currency dropdown in header"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_title",
+          "label": "Menu item",
+          "info": "Enter the menu item to create a mega menu for"
+        },
+        {
+          "type": "range",
+          "id": "columns",
+          "label": "Columns",
+          "min": 2,
+          "max": 6,
+          "default": 4,
+          "step": 1
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Feature image"
+        },
+        {
+          "type": "text",
+          "id": "image_title",
+          "label": "Image title"
+        },
+        {
+          "type": "text",
+          "id": "image_link",
+          "label": "Image link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

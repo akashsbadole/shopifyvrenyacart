@@ -1,0 +1,74 @@
+{% comment %}
+  Enhanced Search - vrenyaCart Theme
+  Predictive search with categories
+{% endcomment %}
+
+<div class="enhanced-search" data-enhanced-search>
+  <div class="enhanced-search__input relative">
+    <input type="search" 
+      class="w-full p-4 rounded" 
+      style="border: 1px solid var(--color-border);"
+      placeholder="{{ section.settings.placeholder | default: 'Search products...' }}"
+      oninput="searchProducts(this.value)"
+      onfocus="showSearchResults()"
+      aria-label="Search">
+    <div class="enhanced-search__results absolute hidden left-0 right-0 mt-2 rounded shadow-lg p-4" style="background: var(--color-surface); z-index: 100; max-height: 400px; overflow: auto;">
+      <div class="enhanced-search__products"></div>
+      <div class="enhanced-search__articles mt-4 pt-4" style="border-top: 1px solid var(--color-border-subtle);"></div>
+      <a href="#" class="enhanced-search__view-all mt-3 block text-center font-semibold" style="color: var(--color-primary);">View all results</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  let searchTimeout;
+
+  function searchProducts(query) {
+    clearTimeout(searchTimeout);
+    if (query.length < 2) {
+      document.querySelector('.enhanced-search__results')?.classList.add('hidden');
+      return;
+    }
+
+    searchTimeout = setTimeout(() => {
+      fetch('/search?q=' + encodeURIComponent(query) + '&type=product,article')
+        .then(r => r.text())
+        .then(html => {
+          const results = document.querySelector('.enhanced-search__results');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          const products = doc.querySelectorAll('.product-card, [data-product]');
+          const articles = doc.querySelectorAll('.article-card, .blog-card');
+          
+          results.classList.remove('hidden');
+          results.querySelector('.enhanced-search__products').innerHTML = products.length ? 
+            '<h3 class="font-semibold mb-2">Products</h3>' + Array.from(products).slice(0, 4).map(p => p.outerHTML).join('') : 
+            '<p class="text-sm">No products found</p>';
+            
+          results.querySelector('.enhanced-search__articles').innerHTML = articles.length ?
+            '<h3 class="font-semibold mb-2">Articles</h3>' + Array.from(articles).slice(0, 2).map(a => a.outerHTML).join('') : '';
+        });
+    }, 300);
+  }
+
+  function showSearchResults() {
+    document.querySelector('.enhanced-search__results')?.classList.remove('hidden');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.enhanced-search')) {
+      document.querySelector('.enhanced-search__results')?.classList.add('hidden');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Enhanced Search",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "placeholder", "label": "Placeholder", "default": "Search products..." }
+  ]
+}
+{% endschema %}

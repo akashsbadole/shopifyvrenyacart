@@ -1,0 +1,69 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "vrenyaCart",
+    "theme_version": "1.0.0",
+    "theme_support_email": "support@appixen.com",
+    "theme_documentation_url": "https://appixen.com/shopify/docs",
+    "theme_author": "vrenyaCart Theme",
+    "theme_documentation": "https://appixen.com/shopify/docs",
+    "theme_preview_image": "",
+    "sections": []
+  },
+  {
+    "name": "Colors",
+    "priority": 10,
+    "settings": [
+      { "type": "header", "content": "Primary Colors" },
+      { "type": "color", "id": "color_primary", "default": "#0052FF", "label": "Primary" },
+      { "type": "color", "id": "color_primary_hover", "default": "#0038b6", "label": "Primary Hover" },
+      { "type": "header", "content": "Surface Colors" },
+      { "type": "color", "id": "color_background", "default": "#fbf9f9", "label": "Background" },
+      { "type": "color", "id": "color_surface", "default": "#ffffff", "label": "Surface" },
+      { "type": "header", "content": "Text Colors" },
+      { "type": "color", "id": "color_text_primary", "default": "#18181b", "label": "Text Primary" },
+      { "type": "color", "id": "color_text_secondary", "default": "#71717a", "label": "Text Secondary" },
+      { "type": "color", "id": "color_text_inverse", "default": "#ffffff", "label": "Text Inverse" },
+      { "type": "header", "content": "Border Colors" },
+      { "type": "color", "id": "color_border", "default": "#e4e4e7", "label": "Border" },
+      { "type": "color", "id": "color_border_subtle", "default": "#e3e2e2", "label": "Border Subtle" },
+      { "type": "header", "content": "Status Colors" },
+      { "type": "color", "id": "color_error", "default": "#ba1a1a", "label": "Error" },
+      { "type": "color", "id": "color_success", "default": "#16a34a", "label": "Success" },
+      { "type": "color", "id": "color_sale", "default": "#dc2626", "label": "Sale" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "priority": 20,
+    "settings": [
+      { "type": "font_picker", "id": "font_heading", "default": "plus_jakarta_sans_n7", "label": "Heading Font" },
+      { "type": "font_picker", "id": "font_body", "default": "plus_jakarta_sans_n4", "label": "Body Font" }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "priority": 30,
+    "settings": [
+      { "type": "text", "id": "social_facebook_link", "label": "Facebook" },
+      { "type": "text", "id": "social_instagram_link", "label": "Instagram" },
+      { "type": "text", "id": "social_twitter_link", "label": "X (Twitter)" },
+      { "type": "text", "id": "social_youtube_link", "label": "YouTube" },
+      { "type": "text", "id": "social_pinterest_link", "label": "Pinterest" }
+    ]
+  },
+  {
+    "name": "Footer",
+    "priority": 40,
+    "settings": [
+      { "type": "text", "id": "footer_copyright", "default": "© 2024 vrenyaCart. All rights reserved.", "label": "Copyright" }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "priority": 50,
+    "settings": [
+      { "type": "text", "id": "google_maps_api_key", "label": "Google Maps API Key" }
+    ]
+  }
+]

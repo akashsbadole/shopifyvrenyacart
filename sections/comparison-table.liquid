@@ -1,0 +1,181 @@
+{% comment %}
+  Comparison Table Section - LUXE Theme
+  Tech niche: Side-by-side product comparison
+{% endcomment %}
+
+<section class="comparison-table py-16" style="padding: var(--section-spacing) 0;">
+  <div class="container mx-auto px-6" style="max-width: var(--container-width);">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="text-3xl font-bold text-center mb-12">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="p-4 text-left font-semibold" style="background: var(--color-surface);">{{ section.settings.label_1 }}</th>
+            {%- for i in (1..section.settings.product_count) -%}
+              {%- assign product_key = 'product_' | append: i -%}
+              {%- assign product = all_products[section.settings[product_key]] -%}
+              <th class="p-4 text-center" style="background: var(--color-surface);">
+                {%- if product != blank -%}
+                  <a href="{{ product.url }}" class="block">
+                    {%- if product.featured_media != blank -%}
+                      {{ product.featured_media | image_url: width: 200 | image_tag: class: 'w-32 h-32 object-contain mx-auto mb-4' }}
+                    {%- endif -%}
+                    <span class="font-medium">{{ product.title | escape }}</span>
+                  </a>
+                {%- else -%}
+                  <span class="w-32 h-32 object-contain mx-auto mb-4 block bg-gray-100 rounded">Product {{ i }}</span>
+                  <span class="font-medium">Product {{ i }}</span>
+                {%- endif -%}
+              </th>
+            {%- endfor -%}
+          </tr>
+        </thead>
+        <tbody>
+          {%- for row in (1..section.settings.row_count) -%}
+            {%- assign label_key = 'row_' | append: row | append: '_label' -%}
+            {%- assign value_key = 'row_' | append: row | append: '_value' -%}
+            <tr class="border-t" style="border-color: var(--color-border-subtle);">
+              <td class="p-4 font-medium" style="background: var(--color-surface);">{{ section.settings[label_key] }}</td>
+              {%- for i in (1..section.settings.product_count) -%}
+                <td class="p-4 text-center">{{ section.settings[value_key] }}</td>
+              {%- endfor -%}
+            </tr>
+          {%- endfor -%}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="p-4" style="background: var(--color-surface);"></td>
+            {%- for i in (1..section.settings.product_count) -%}
+              {%- assign product_key = 'product_' | append: i -%}
+              {%- assign product = all_products[section.settings[product_key]] -%}
+              <td class="p-4 text-center" style="background: var(--color-surface);">
+                {%- if product != blank -%}
+                  <button
+                    type="button"
+                    class="w-full py-3 px-4 font-semibold rounded"
+                    style="background: var(--color-primary); color: var(--color-text-inverse);"
+                    onclick="window.vrenyaCart.cart.addItem('{{ product.selected_or_first_available_variant.id }}', 1)"
+                  >
+                    {{ 'products.product.add_to_cart' | t }}
+                  </button>
+                {%- else -%}
+                  <button type="button" class="w-full py-3 px-4 font-semibold rounded" style="background: var(--color-primary); color: var(--color-text-inverse);">
+                    Add to Cart
+                  </button>
+                {%- endif -%}
+              </td>
+            {%- endfor -%}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "class": "section-comparison",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Compare Products"
+    },
+    {
+      "type": "text",
+      "id": "label_1",
+      "label": "First Column Label",
+      "default": "Features"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "label": "Number of Products",
+      "min": 2,
+      "max": 4,
+      "default": 3,
+      "step": 1
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Product 1"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Product 2"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "Product 3"
+    },
+    {
+      "type": "product",
+      "id": "product_4",
+      "label": "Product 4"
+    },
+    {
+      "type": "header",
+      "content": "Comparison Rows"
+    },
+    {
+      "type": "range",
+      "id": "row_count",
+      "label": "Number of Rows",
+      "min": 3,
+      "max": 8,
+      "default": 5,
+      "step": 1
+    },
+    {
+      "type": "text",
+      "id": "row_1_label",
+      "label": "Row 1 Label",
+      "default": "Price"
+    },
+    {
+      "type": "text",
+      "id": "row_1_value",
+      "label": "Row 1 Value",
+      "default": "$299"
+    },
+    {
+      "type": "text",
+      "id": "row_2_label",
+      "label": "Row 2 Label",
+      "default": "Battery Life"
+    },
+    {
+      "type": "text",
+      "id": "row_2_value",
+      "label": "Row 2 Value",
+      "default": "40 hours"
+    },
+    {
+      "type": "text",
+      "id": "row_3_label",
+      "label": "Row 3 Label",
+      "default": "Warranty"
+    },
+    {
+      "type": "text",
+      "id": "row_3_value",
+      "label": "Row 3 Value",
+      "default": "2 years"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table"
+    }
+  ]
+}
+{% endschema %}

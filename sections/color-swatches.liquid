@@ -1,0 +1,74 @@
+{% comment %}
+  Color Swatches - vrenyaCart Theme
+  Product option color selector with images
+{% endcomment %}
+
+{%- assign product = product | default: all_products[section.settings.product] -%}
+
+{%- if product != blank and product.options contains 'Color' -%}
+<div class="color-swatches">
+  {%- assign color_option = product.options_by_name['Color'] -%}
+  {%- assign color_values = color_option.values -%}
+  
+  <div class="color-swatches__list flex flex-wrap gap-2">
+    {%- for color in color_values -%}
+      {%- assign color_variant = product.variants | where: 'option1', color | first -%}
+      <button
+        type="button"
+        class="color-swatch relative w-8 h-8 rounded-full border-2{% if forloop.first %} ring-2{% endif %}"
+        style="border-color: var(--color-border);"
+        data-color="{{ color | downcase }}"
+        data-variant-id="{{ color_variant.id }}"
+        onclick="selectColor('{{ color }}', {{ color_variant.id }})"
+        aria-label="{{ color }}"
+      >
+        <span class="absolute inset-1 rounded-full" style="background: {{ color | downcase | remove: ' ' }};">
+          {%- assign color_image_key = 'color_image_' | append: forloop.index -%}
+          {%- assign color_image = section.settings[color_image_key] -%}
+          {%- if color_image != blank -%}
+            {{ color_image | image_url: width: 64 | image_tag: class: 'w-full h-full rounded-full object-cover' }}
+          {%- endif -%}
+        </span>
+      </button>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.show_color_name -%}
+  <p class="color-swatch__selected text-sm mt-2">
+    <span class="text-secondary">Color:</span> <span class="font-semibold" id="selectedColor">{{ color_values.first }}</span>
+  </p>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+<script>
+  function selectColor(color, variantId) {
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+      swatch.classList.remove('ring-2');
+      swatch.style.ringColor = 'transparent';
+    });
+    event.target.closest('.color-swatch').classList.add('ring-2');
+    document.getElementById('selectedColor').textContent = color;
+    
+    if (variantId) {
+      window.vrenyaCart.cart.addItem(variantId, 1);
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Color Swatches",
+  "class": "section-color-swatches",
+  "tag": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "checkbox", "id": "show_color_name", "label": "Show Selected Color Name", "default": true },
+    { "type": "image_picker", "id": "color_image_1", "label": "Color 1 Image" },
+    { "type": "image_picker", "id": "color_image_2", "label": "Color 2 Image" },
+    { "type": "image_picker", "id": "color_image_3", "label": "Color 3 Image" },
+    { "type": "image_picker", "id": "color_image_4", "label": "Color 4 Image" }
+  ],
+  "presets": [{ "name": "Color Swatches" }]
+}
+{% endschema %}

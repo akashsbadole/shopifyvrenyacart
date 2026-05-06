@@ -1,0 +1,79 @@
+{% comment %}
+  Infinite Scroll - vrenyaCart Theme
+  Load more products on scroll or click
+{% endcomment %}
+
+<div class="infinite-scroll" data-infinite data-url="{{ collection.url }}" data-limit="{{ section.settings.limit }}" data-loaded="0">
+  <div class="infinite-scroll__products grid">
+    {%- for product in collection.products limit: section.settings.limit -%}
+      {% render 'product-card', product: product %}
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.load_type == 'scroll' -%}
+  <div class="infinite-scroll__loader text-center py-8">
+    <div class="infinite-scroll__trigger" data-trigger></div>
+  </div>
+  {%- else -%}
+  <div class="infinite-scroll__button text-center py-8">
+    <button type="button" class="py-4 px-8 font-semibold rounded" style="background: var(--color-surface); border: 1px solid var(--color-border);" onclick="loadMoreProducts()">
+      Load More ({{ collection.products.size }} more)
+    </button>
+  </div>
+  {%- endif -%}
+</div>
+
+<script>
+  let loaded = {{ collection.products.size | default: section.settings.limit }};
+  const limit = {{ section.settings.limit }};
+
+  function loadMoreProducts() {
+    const container = document.querySelector('[data-infinite]');
+    const url = container.dataset.url;
+    
+    fetch(url + '?page=2&limit=' + limit + '&offset=' + loaded)
+      .then(r => r.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const products = doc.querySelectorAll('.product-card');
+        
+        if (products.length === 0) {
+          document.querySelector('.infinite-scroll__button')?.remove();
+          return;
+        }
+
+        const grid = container.querySelector('.infinite-scroll__products');
+        products.forEach(p => grid.appendChild(p));
+        loaded += products.length;
+        
+        if (products.length < limit) {
+          document.querySelector('.infinite-scroll__button')?.remove();
+        }
+      });
+  }
+
+  {%- if section.settings.load_type == 'scroll' -%}
+  (function() {
+    const trigger = document.querySelector('[data-trigger]');
+    if (!trigger) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) loadMoreProducts();
+    }, { rootMargin: '100px' });
+    
+    observer.observe(trigger);
+  })();
+  {%- endif -%}
+</script>
+
+{% schema %}
+{
+  "name": "Infinite Scroll",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "limit", "label": "Products Per Page", "min": 8, "max": 32, "default": 16, "step": 4 },
+    { "type": "select", "id": "load_type", "label": "Load Type", "options": [{"value": "scroll", "label": "On Scroll"}, {"value": "button", "label": "Load More Button"}] }
+  ]
+}
+{% endschema %}

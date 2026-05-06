@@ -1,0 +1,125 @@
+{% comment %}
+  Footer Section - LUXE Theme
+{% endcomment %}
+
+{%- style -%}
+  .footer {
+    background-color: var(--color-surface);
+  }
+
+  .footer__newsletter-form input {
+    border-radius: var(--border-radius);
+  }
+
+  .footer__newsletter-form button {
+    border-radius: var(--border-radius);
+  }
+{%- endstyle -%}
+
+<footer class="footer border-t border-[var(--color-border-subtle)]">
+  <div class="footer__container mx-auto px-6 py-16" style="max-width: var(--container-width);">
+
+    {%- if section.settings.footer_newsletter -%}
+      {% render 'footer-newsletter' %}
+    {%- endif -%}
+
+    <div class="footer__grid grid gap-8" style="grid-template-columns: repeat({{ section.settings.footer_columns }}, minmax(0, 1fr)); margin-top: 3rem;">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <div class="footer__column">
+          <h3 class="footer__title font-semibold mb-4">{{ link.title }}</h3>
+          <ul class="footer__links list-none space-y-3">
+            {%- for child_link in link.links -%}
+              <li>
+                <a href="{{ child_link.url }}" class="text-sm hover:opacity-70 transition-opacity" style="color: var(--color-text-secondary);">
+                  {{ child_link.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="footer__bottom flex flex-col md:flex-row items-center justify-between gap-4 pt-8 mt-8" style="border-top: 1px solid var(--color-border-subtle);">
+      <div class="footer__brand">
+        <span class="text-lg font-bold tracking-tighter">{{ shop.name | escape }}</span>
+      </div>
+
+      {%- if section.settings.footer_payment -%}
+        <div class="footer__payment flex gap-2">
+          {% render 'payment-icons' %}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.footer_social -%}
+        <div class="footer__social flex gap-4">
+          {% render 'social-icons' %}
+        </div>
+      {%- endif -%}
+
+      <div class="footer__copyright text-sm" style="color: var(--color-text-secondary);">
+        {{ section.settings.footer_copyright }}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_newsletter",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "range",
+      "id": "footer_columns",
+      "label": "Number of columns",
+      "min": 2,
+      "max": 5,
+      "default": 4,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_social",
+      "label": "Show social icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_payment",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "footer_copyright",
+      "label": "Copyright",
+      "default": "© 2024 vrenyaCart. Engineered for Precision."
+    }
+  ]
+}
+{% endschema %}

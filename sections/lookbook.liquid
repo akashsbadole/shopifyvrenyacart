@@ -1,0 +1,132 @@
+{% comment %}
+  Lookbook Gallery Section - LUXE Theme
+  Fashion: Shop the look image gallery
+{% endcomment %}
+
+<section class="lookbook py-16" style="padding: var(--section-spacing) 0;">
+  <div class="container mx-auto px-6" style="max-width: var(--container-width);">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="text-3xl font-bold text-center mb-4">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="text-center mb-12" style="color: var(--color-text-secondary);">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    <div class="grid {{ section.settings.layout }}">
+      {%- for i in (1..section.settings.image_count) -%}
+        {%- assign image_key = 'image_' | append: i -%}
+        {%- assign link_key = 'link_' | append: i -%}
+        {%- assign title_key = 'title_' | append: i -%}
+        
+        <div class="lookbook__item group relative overflow-hidden{% if section.settings.layout == 'grid-cols-3' %} aspect-[3/4]{% else %} aspect-square{% endif %}">
+          {%- if section.settings[image_key] != blank -%}
+            {{ section.settings[image_key] | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'w-full h-full' }}
+          {%- endif -%}
+
+          {%- if section.settings.enable_overlay -%}
+          <div class="lookbook__overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style="background: rgba(0,0,0,0.5);">
+            <div class="text-center text-white p-4">
+              {%- if section.settings[title_key] != blank -%}
+                <h3 class="font-semibold text-lg mb-2">{{ section.settings[title_key] }}</h3>
+              {%- endif -%}
+              {%- if section.settings[link_key] != blank -%}
+                <a href="{{ section.settings[link_key] }}" class="text-sm underline">Shop This Look</a>
+              {%- endif -%}
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook Gallery",
+  "class": "section-lookbook",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop the Look"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Style inspiration from our latest collection"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {"value": "grid-cols-2", "label": "2 Columns"},
+        {"value": "grid-cols-3", "label": "3 Columns"},
+        {"value": "grid-cols-4", "label": "4 Columns"}
+      ],
+      "default": "grid-cols-3"
+    },
+    {
+      "type": "range",
+      "id": "image_count",
+      "label": "Number of Images",
+      "min": 2,
+      "max": 6,
+      "default": 3,
+      "step": 1
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Image 1 Title"
+    },
+    {
+      "type": "url",
+      "id": "link_1",
+      "label": "Image 1 Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Image 2 Title"
+    },
+    {
+      "type": "url",
+      "id": "link_2",
+      "label": "Image 2 Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_overlay",
+      "label": "Show Hover Overlay",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Gallery"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,28 @@
+{% comment %}
+  Product Card Placeholder Snippet - LUXE Theme
+  Displayed when no actual products are available
+{% endcomment %}
+
+<div class="product-card group relative">
+  <a href="#" class="product-card__link block">
+    <div class="product-card__image relative overflow-hidden rounded" style="background: var(--color-surface);">
+      {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}
+
+      {%- if settings.product_sale_badge -%}
+        <span class="product-card__badge absolute top-3 left-3 px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded" style="background: var(--color-sale); color: #fff;">
+          {{ 'products.product.on_sale' | t }}
+        </span>
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__info mt-4">
+      <h3 class="product-card__title text-base font-medium group-hover:opacity-70 transition-opacity">
+        {{ 'products.onboarding.title' | t }}
+      </h3>
+
+      <div class="product-card__price mt-1">
+        <span class="price__current">{{ 'products.onboarding.price' | t }}</span>
+      </div>
+    </div>
+  </a>
+</div>

@@ -1,0 +1,66 @@
+{% comment %}Image Gallery - vrenyaCart Theme{% endcomment %}
+
+<div class="image-gallery" id="gallery-{{ section.id }}">
+  <div class="main-image mb-4">
+    {% if product.featured_image %}
+      <img 
+        src="{{ product.featured_image | image_url: width: 800, height: 800 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        width="800"
+        height="800"
+        class="w-full"
+        id="main-image-{{ section.id }}"
+        onclick="openLightbox('{{ section.id }}')">
+    {% endif %}
+  </div>
+  
+  {% if product.images.size > 1 %}
+    <div class="thumbnails grid grid-cols-4 gap-2">
+      {% for image in product.images %}
+        <button 
+          type="button"
+          class="thumbnail border-2 p-1"
+          onclick="switchImage('{{ image | image_url: width: 800 }}', '{{ section.id }}')"
+          data-image-id="{{ image.id }}">
+          <img src="{{ image | image_url: width: 150, height: 150 }}" alt="{{ image.alt | escape }}" width="150" height="150" class="w-full">
+        </button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<dialog id="lightbox-{{ section.id }}" class="lightbox hidden">
+  <div class="fixed inset-0 bg-black/90 flex items-center justify-center" onclick="closeLightbox('{{ section.id }}')">
+    <button class="absolute top-4 right-4 text-white" onclick="closeLightbox('{{ section.id }}')">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <img id="lightbox-image-{{ section.id }}" src="{{ product.featured_image | image_url: width: 800, height: 800 }}" class="max-w-full max-h-full" width="800" height="800">
+  </div>
+</dialog>
+
+<script>
+  function switchImage(src, id) {
+    document.getElementById('main-image-' + id).src = src;
+  }
+  
+  function openLightbox(id) {
+    const src = document.getElementById('main-image-' + id).src;
+    document.getElementById('lightbox-image-' + id).src = src;
+    document.getElementById('lightbox-' + id).showModal();
+  }
+  
+  function closeLightbox(id) {
+    document.getElementById('lightbox-' + id).close();
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Image Gallery",
+  "class": "section-image-gallery",
+  "settings": [],
+  "presets": [{ "name": "Image Gallery" }]
+}
+{% endschema %}

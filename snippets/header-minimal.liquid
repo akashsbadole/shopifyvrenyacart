@@ -1,0 +1,95 @@
+{% comment %}
+  Header - Minimal Style - LUXE Theme
+  Used when header_style is set to 'minimal'
+{% endcomment %}
+
+<a href="{{ routes.root_url }}" class="header__logo text-xl font-black tracking-tighter">
+  {{ shop.name | escape }}
+</a>
+
+<div class="header__icons flex items-center gap-4">
+  {%- if section.settings.enable_language_selector -%}
+    {%- if localization.available_languages.size > 1 -%}
+      <div class="header__language relative">
+        <button type="button" class="header__icon flex items-center gap-1" onclick="toggleLanguageMenu()">
+          {{ localization.language.iso_code | upcase }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="language-menu absolute right-0 top-full mt-2 py-2 rounded hidden" style="background: var(--color-surface); box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px;">
+          {%- for language in localization.available_languages -%}
+            <form method="post" action="/localization">
+              <input type="hidden" name="language_code" value="{{ language.iso_code }}">
+              <button type="submit" class="w-full text-left px-4 py-2 text-sm hover:opacity-70{% if language.iso_code == localization.language.iso_code %} font-semibold{% endif %}">
+                {{ language.endonym_name | capitalize }}
+              </button>
+            </form>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- if section.settings.enable_currency_selector -%}
+    {%- if localization.available_currencies.size > 1 -%}
+      <div class="header__currency relative">
+        <button type="button" class="header__icon flex items-center gap-1" onclick="toggleCurrencyMenu()">
+          {{ localization.currency.iso_code | default: shop.currency }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="currency-menu absolute right-0 top-full mt-2 py-2 rounded hidden" style="background: var(--color-surface); box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px;">
+          {%- for currency in localization.available_currencies -%}
+            <form method="post" action="/localization">
+              <input type="hidden" name="currency_code" value="{{ currency.iso_code }}">
+              <button type="submit" class="w-full text-left px-4 py-2 text-sm hover:opacity-70{% if currency.iso_code == localization.currency.iso_code %} font-semibold{% endif %}">
+                {{ currency.iso_code }} - {{ currency.name }}
+              </button>
+            </form>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- if section.settings.enable_search -%}
+    <button class="header__icon" data-search-icon aria-label="Search">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+  {%- endif -%}
+
+  {%- if section.settings.enable_wishlist -%}
+    <a href="{{ routes.collections_url }}/wishlist" class="header__icon" aria-label="Wishlist">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+      </svg>
+    </a>
+  {%- endif -%}
+
+  {%- if section.settings.enable_account -%}
+    {%- if customer -%}
+      <a href="{{ routes.account_url }}" class="header__icon" aria-label="Account">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </a>
+    {%- else -%}
+      <a href="{{ routes.account_login_url }}" class="header__icon" aria-label="Login">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  {%- endif -%}
+
+  <button class="header__icon" data-cart-icon aria-label="Cart">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+    </svg>
+    <span data-cart-count class="absolute -top-1 -right-1 w-4 h-4 text-xs bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center">0</span>
+  </button>
+</div>

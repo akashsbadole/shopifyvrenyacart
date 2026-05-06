@@ -1,0 +1,46 @@
+{% comment %}
+  Ingredients/Nutritional Info - vrenyaCart Theme
+{% endcomment %}
+
+<div class="ingredients">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b" style="border-color: var(--color-border-subtle);">
+        <th class="text-left py-2 font-semibold">{{ section.settings.label_1 | default: 'Ingredient' }}</th>
+        <th class="text-right py-2 font-semibold">{{ section.settings.label_2 | default: 'Amount' }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for i in (1..section.settings.row_count) -%}
+        {%- assign name_key = 'name_' | append: i -%}
+        {%- assign amount_key = 'amount_' | append: i -%}
+        {%- if section.settings[name_key] != blank -%}
+        <tr class="border-b" style="border-color: var(--color-border-subtle);">
+          <td class="py-2">{{ section.settings[name_key] }}</td>
+          <td class="py-2 text-right">{{ section.settings[amount_key] }}</td>
+        </tr>
+        {%- endif -%}
+      {%- endfor -%}
+    </tbody>
+  </table>
+  {%- if section.settings.note != blank -%}
+  <p class="text-xs mt-3" style="color: var(--color-text-secondary);">{{ section.settings.note }}</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Ingredients",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "label_1", "label": "Column 1 Label", "default": "Ingredient" },
+    { "type": "text", "id": "label_2", "label": "Column 2 Label", "default": "Amount" },
+    { "type": "range", "id": "row_count", "label": "Rows", "min": 3, "max": 15, "default": 5, "step": 1 },
+    { "type": "text", "id": "name_1", "label": "Row 1" },
+    { "type": "text", "id": "amount_1", "label": "Row 1 Amount" },
+    { "type": "text", "id": "name_2", "label": "Row 2" },
+    { "type": "text", "id": "amount_2", "label": "Row 2 Amount" },
+    { "type": "text", "id": "note", "label": "Footer Note" }
+  ]
+}
+{% endschema %}

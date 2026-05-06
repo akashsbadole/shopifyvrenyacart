@@ -1,0 +1,6 @@
+{% comment %}Favicon Snippet - LUXE Theme{% endcomment %}
+
+{% if settings.favicon != blank %}
+  {% assign favicon_url = settings.favicon | image_url: width: 32, height: 32 %}
+  <link rel="icon" type="image/png" href="{{ favicon_url }}">
+{% endif %}

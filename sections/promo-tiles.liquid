@@ -1,0 +1,59 @@
+{% comment %}
+  Promo Tiles Section - vrenyaCart Theme
+  Grid of promotional tiles/boxes
+{% endcomment %}
+
+<section class="promo-tiles py-16">
+  <div class="promo-tiles__container mx-auto px-6" style="max-width: var(--container-width);">
+    <div class="grid gap-6" style="grid-template-columns: repeat({{ section.settings.columns }}, minmax(0, 1fr));">
+      {%- for i in (1..section.settings.tile_count) -%}
+        {%- assign image_key = 'tile_image_' | append: i -%}
+        {%- assign heading_key = 'tile_heading_' | append: i -%}
+        {%- assign text_key = 'tile_text_' | append: i -%}
+        {%- assign link_key = 'tile_link_' | append: i -%}
+        
+        <a href="{{ section.settings[link_key] }}" class="promo-tile group relative overflow-hidden rounded" style="min-height: {{ section.settings.height }}px;">
+          {%- if section.settings[image_key] != blank -%}
+            {{ section.settings[image_key] | image_url: width: 800 | image_tag: class: 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }}
+          {%- else -%}
+            <div class="absolute inset-0 flex items-center justify-center" style="background: var(--color-surface);">
+              <span class="text-xl font-bold" style="color: var(--color-border-subtle);">Tile {{ i }}</span>
+            </div>
+          {%- endif -%}
+          
+          <div class="promo-tile__content absolute inset-0 flex flex-col items-center justify-center p-6 text-center" style="background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});">
+            {%- if section.settings[heading_key] != blank -%}
+              <h3 class="text-xl font-bold text-white mb-2">{{ section.settings[heading_key] }}</h3>
+            {%- endif -%}
+            {%- if section.settings[text_key] != blank -%}
+              <p class="text-sm text-white/80">{{ section.settings[text_key] }}</p>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promo Tiles",
+  "class": "section-promo-tiles",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "columns", "label": "Columns", "min": 2, "max": 4, "default": 3, "step": 1 },
+    { "type": "range", "id": "height", "label": "Tile Height", "min": 150, "max": 300, "default": 200, "step": 25 },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay Opacity", "min": 0, "max": 70, "default": 30, "step": 5 },
+    { "type": "range", "id": "tile_count", "label": "Number of Tiles", "min": 2, "max": 6, "default": 3, "step": 1 },
+    { "type": "image_picker", "id": "tile_image_1", "label": "Tile 1 Image" },
+    { "type": "text", "id": "tile_heading_1", "label": "Tile 1 Heading" },
+    { "type": "text", "id": "tile_text_1", "label": "Tile 1 Text" },
+    { "type": "url", "id": "tile_link_1", "label": "Tile 1 Link" },
+    { "type": "image_picker", "id": "tile_image_2", "label": "Tile 2 Image" },
+    { "type": "text", "id": "tile_heading_2", "label": "Tile 2 Heading" },
+    { "type": "image_picker", "id": "tile_image_3", "label": "Tile 3 Image" },
+    { "type": "text", "id": "tile_heading_3", "label": "Tile 3 Heading" }
+  ],
+  "presets": [{ "name": "Promo Tiles" }]
+}
+{% endschema %}

@@ -1,0 +1,91 @@
+{% comment %}
+  Product Card Snippet - LUXE Theme
+{% endcomment %}
+
+{%- assign product = product -%}
+
+<div class="product-card group relative">
+  <a href="{{ product.url }}" class="product-card__link block">
+    <div class="product-card__image relative overflow-hidden rounded" style="background: var(--color-surface);">
+      {%- if product.featured_media != blank -%}
+        {{ product.featured_media | image_url: width: 600 | image_tag:
+          class: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105',
+          loading: lazy,
+          widths: '300, 400, 500, 600'
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}
+      {%- endif -%}
+
+      {%- if settings.product_sale_badge -%}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="product-card__badge absolute top-3 left-3 px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded" style="background: var(--color-sale); color: #fff;">
+            {{ 'products.product.on_sale' | t }}
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if settings.product_new_badge -%}
+        {%- assign product_created_at = product.created_at | date: '%s' -%}
+        {%- assign today_now = 'now' | date: '%s' -%}
+        {%- assign day_diff = today_now | minus: product_created_at | divided_by: 86400 -%}
+        {%- if day_diff < 14 -%}
+          <span class="product-card__badge absolute top-3 {% if product.compare_at_price > product.price %}left-16{% else %}left-3{% endif %} px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded" style="background: var(--color-primary); color: #fff;">
+            New
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if settings.product_sold_out -%}
+        {%- unless product.available -%}
+          <span class="product-card__badge absolute top-3 left-3 px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded" style="background: var(--color-text-secondary); color: #fff;">
+            {{ 'products.product.sold_out' | t }}
+          </span>
+        {%- endunless -%}
+      {%- endif -%}
+
+      {%- if settings.product_quick_view -%}
+        <div class="product-card__actions absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <button
+            type="button"
+            class="w-full py-3 text-sm font-semibold uppercase tracking-wider rounded"
+            style="background: var(--color-surface); color: var(--color-text-primary);"
+            onclick="openQuickView('{{ product.handle }}'); event.preventDefault();"
+          >
+            Quick View
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__info mt-4">
+      <h3 class="product-card__title text-base font-medium group-hover:opacity-70 transition-opacity">
+        {{ product.title | escape }}
+      </h3>
+
+      <div class="product-card__price mt-1">
+        {%- render 'price', product: product -%}
+      </div>
+
+      {%- if settings.product_reviews -%}
+        <div class="product-card__reviews mt-2">
+          {%- render 'review-stars', product: product -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </a>
+
+  {%- if settings.product_wishlist -%}
+    <button
+      type="button"
+      class="product-card__wishlist absolute top-3 right-3 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+      style="background: var(--color-surface); color: var(--color-text-primary);"
+      aria-label="Add to wishlist"
+      onclick="toggleWishlist('{{ product.handle }}'); event.preventDefault();"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+      </svg>
+    </button>
+  {%- endif -%}
+</div>

@@ -1,0 +1,64 @@
+{% comment %}
+  Pre-Order Product Section - LUXE Theme
+  Pre-order variant display with shipping date
+{% endcomment %}
+
+<div class="preorder-badge inline-flex items-center gap-2 px-3 py-1 rounded text-sm font-semibold" style="background: var(--color-primary); color: var(--color-text-inverse);">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+  </svg>
+  {{ section.settings.preorder_text | default: 'Pre-order' }}
+</div>
+
+{%- if section.settings.show_date and product.metafields.custom.preorder_date != blank -%}
+<p class="preorder-date text-sm mt-2" style="color: var(--color-text-secondary);">
+  {%- assign preorder_date = product.metafields.custom.preorder_date -%}
+  Ships by {{ preorder_date | date: '%B %d, %Y' }}
+</p>
+{%- endif -%}
+
+{%- if section.settings.show_countdown and product.metafields.custom.preorder_deadline != blank -%}
+<div class="preorder-countdown flex gap-2 mt-2">
+  {%- assign deadline = product.metafields.custom.preorder_deadline | date: '%s' -%}
+  {%- assign now = 'now' | date: '%s' -%}
+  {%- assign days_left = deadline | minus: now | divided_by: 86400 -%}
+  {%- if days_left > 0 -%}
+    <span class="text-sm font-semibold" style="color: var(--color-sale);">{{ days_left }} days left to pre-order</span>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Pre-Order Badge",
+  "class": "section-preorder",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "preorder_text",
+      "label": "Pre-order Text",
+      "default": "Pre-order"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show Shipping Date",
+      "default": true,
+      "info": "Requires 'preorder_date' metafield"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show Countdown",
+      "default": true,
+      "info": "Requires 'preorder_deadline' metafield"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pre-Order Badge"
+    }
+  ]
+}
+{% endschema %}

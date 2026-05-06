@@ -1,0 +1,45 @@
+{% comment %}Progress Bar - vrenyaCart Theme{% endcomment %}
+
+{% assign cart_total = cart.total_price %}
+{% assign goal = section.settings.goal | times: 100 %}
+{% assign progress = cart_total | times: 100 | divided_by: goal | at_most: 100 %}
+
+<div class="progress-bar">
+  <div class="flex justify-between text-sm mb-2">
+    <span>{{ section.settings.start_text | default: 'Your cart' }}</span>
+    <span>{{ cart_total | money }} / {{ goal | money }}</span>
+  </div>
+  
+  <div class="h-3 rounded-full overflow-hidden" style="background: var(--color-border);">
+    <div 
+      class="h-full rounded-full transition-all duration-500"
+      style="width: {{ progress }}%; background: var(--color-primary);">
+    </div>
+  </div>
+  
+  {% if cart_total < goal %}
+    <p class="text-sm mt-2" style="color: var(--color-text-secondary);">
+      {{ section.settings.remaining_text | default: 'Add' }} {{ goal | minus: cart_total | money }} {{ section.settings.goal_text | default: 'more to unlock' }} {{ section.settings.reward_text | default: 'FREE shipping' }}!
+    </p>
+  {% else %}
+    <p class="text-sm mt-2 font-semibold" style="color: var(--color-success);">
+      {{ section.settings.success_text | default: 'You qualify for FREE shipping!' }}
+    </p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Progress Bar",
+  "class": "section-progress-bar",
+  "settings": [
+    { "type": "number", "id": "goal", "default": 5000, "label": "Goal Amount" },
+    { "type": "text", "id": "start_text", "default": "Your cart", "label": "Start Text" },
+    { "type": "text", "id": "goal_text", "default": "more to unlock", "label": "Goal Text" },
+    { "type": "text", "id": "reward_text", "default": "FREE shipping", "label": "Reward Text" },
+    { "type": "text", "id": "remaining_text", "default": "Add", "label": "Remaining Text" },
+    { "type": "text", "id": "success_text", "default": "You qualify for FREE shipping!", "label": "Success Text" }
+  ],
+  "presets": [{ "name": "Progress Bar" }]
+}
+{% endschema %}

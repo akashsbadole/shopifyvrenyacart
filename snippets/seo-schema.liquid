@@ -1,0 +1,85 @@
+{% comment %}
+  Schema.org Structured Data - SEO Optimization
+{% endcomment %}
+
+{% if template contains 'product' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncate: 180 | json }},
+    "url": {{ request.url | prepend: shop.url | json }},
+    {%- if product.featured_media -%}
+    "image": [
+      {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }}
+    ],
+    {%- endif -%}
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | json }}
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": {{ product.price | money_without_currency | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": {{ product.available | json }},
+      "seller": {
+        "@type": "Organization",
+        "name": {{ shop.name | json }}
+      }
+    }
+    {%- if product.metafields.reviews and product.metafields.reviews.rating -%},
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": {{ product.metafields.reviews.rating | json }},
+      "reviewCount": {{ product.metafields.reviews.count | json }}
+    }
+    {%- endif -%}
+  }
+  </script>
+{% elsif template contains 'collection' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": {{ collection.title | json }},
+    "description": {{ collection.description | strip_html | truncate: 180 | json }},
+    "url": {{ request.url | prepend: shop.url | json }}
+  }
+  </script>
+{% elsif template contains 'article' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ article.title | json }},
+    "articleSection": {{ blog.title | json }},
+    "datePublished": {{ article.published_at | json }},
+    "dateModified": {{ article.updated_at | json }},
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    },
+    "url": {{ request.url | prepend: shop.url | json }}
+  }
+  </script>
+{% elsif template contains 'index' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {{ shop.url | append: '/search?q={search_term_string}' | json }},
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+{% endif %}

@@ -1,0 +1,73 @@
+{% comment %}
+  Newsletter Popup - vrenyaCart Theme
+  Exit-intent popup for email signup
+{% endcomment %}
+
+<div class="newsletter-popup fixed inset-0 z-50 hidden" id="newsletterPopup" data-exit-intent>
+  <div class="newsletter-popup__overlay fixed inset-0 bg-black/50" onclick="closeNewsletterPopup()"></div>
+  <div class="newsletter-popup__content fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded p-8 text-center">
+    <button type="button" class="newsletter-popup__close absolute top-4 right-4" onclick="closeNewsletterPopup()" aria-label="Close">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 400 | image_tag: class: 'w-32 h-32 mx-auto mb-4 object-contain' }}
+    {%- endif -%}
+
+    <h2 class="text-2xl font-bold mb-2">{{ section.settings.heading | default: 'Join Our Newsletter' }}</h2>
+    <p class="mb-6" style="color: var(--color-text-secondary);">{{ section.settings.text | default: 'Subscribe to get exclusive offers!' }}</p>
+
+    {% form 'customer', class: 'newsletter-form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="email" name="contact[email]" required placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}" class="w-full p-3 rounded mb-3" style="border: 1px solid var(--color-border);">
+      <button type="submit" class="w-full py-3 font-semibold rounded" style="background: var(--color-primary); color: var(--color-text-inverse);">
+        {{ section.settings.button | default: 'Subscribe' }}
+      </button>
+    {% endform %}
+
+    <button type="button" class="text-sm underline mt-3" onclick="closeNewsletterPopup()">{{ section.settings.no_thanks | default: 'No thanks' }}</button>
+  </div>
+</div>
+
+<script>
+  let newsletterShown = false;
+
+  function showNewsletterPopup() {
+    if (newsletterShown) return;
+    const popup = document.getElementById('newsletterPopup');
+    if (popup && localStorage.getItem('newsletter_subscribed') !== 'true') {
+      popup.classList.remove('hidden');
+      newsletterShown = true;
+    }
+  }
+
+  function closeNewsletterPopup() {
+    document.getElementById('newsletterPopup').classList.add('hidden');
+  }
+
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientX <= 0 && !newsletterShown) showNewsletterPopup();
+  });
+
+  setTimeout(showNewsletterPopup, {{ section.settings.delay | default: 5000 }});
+
+  document.querySelector('.newsletter-form')?.addEventListener('submit', () => {
+    localStorage.setItem('newsletter_subscribed', 'true');
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Newsletter Popup",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "text", "label": "Text" },
+    { "type": "text", "id": "placeholder", "label": "Placeholder" },
+    { "type": "text", "id": "button", "label": "Button" },
+    { "type": "text", "id": "no_thanks", "label": "No Thanks Text" },
+    { "type": "range", "id": "delay", "label": "Delay (ms)", "min": 1000, "max": 30000, "default": 5000, "step": 1000 }
+  ]
+}
+{% endschema %}

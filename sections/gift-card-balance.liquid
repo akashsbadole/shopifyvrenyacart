@@ -1,0 +1,39 @@
+{% comment %}Gift Card Balance - vrenyaCart Theme{% endcomment %}
+
+<div class="gift-card-balance" id="gift-card-balance">
+  <div class="p-6 rounded-lg" style="background: var(--color-surface);">
+    <h3 class="text-lg font-semibold mb-4">{{ section.settings.heading | default: 'Check Gift Card Balance' }}</h3>
+    
+    <form action="/gift-cards" method="get" class="flex gap-2">
+      <input 
+        type="text" 
+        name="gift_card_code" 
+        placeholder="Enter gift card code"
+        required
+        class="flex-1 px-4 py-3 border rounded"
+        style="border-color: var(--color-border);">
+      <button type="submit" class="px-6 py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">
+        {{ section.settings.button_text | default: 'Check Balance' }}
+      </button>
+    </form>
+    
+    {% if gift_card %}
+      <div class="mt-4 p-4 rounded" style="background: var(--color-background);">
+        <p class="text-sm" style="color: var(--color-text-secondary);">Available Balance</p>
+        <p class="text-2xl font-bold">{{ gift_card.balance | money }}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Card Balance",
+  "class": "section-gift-card-balance",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Check Gift Card Balance", "label": "Heading" },
+    { "type": "text", "id": "button_text", "default": "Check Balance", "label": "Button Text" }
+  ],
+  "presets": [{ "name": "Gift Card Balance" }]
+}
+{% endschema %}

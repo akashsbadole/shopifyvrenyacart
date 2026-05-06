@@ -1,0 +1,42 @@
+{
+  "general": {
+    "newsletter": {
+      "email_label": "Email address",
+      "subscribe_button": "Subscribe",
+      "success": "Thanks for subscribing!"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search for products..."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close"
+  },
+  "blogs": {
+    "article": {
+      "read_more": "Read more"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "continue_shopping": "Continue shopping",
+    "remove": "Remove",
+    "checkout": "Checkout"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "from": "From",
+      "free": "Free",
+      "on_sale": "Sale"
+    },
+    "onboarding": {
+      "title": "Example Product Title",
+      "price": "19.99"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{% comment %}
+  Countdown Timer Section - LUXE Theme
+  Dropshipping niche: Urgency timer for sales
+{% endcomment %}
+
+{%- assign end_date = section.settings.end_date | date: '%s' -%}
+{%- assign now = 'now' | date: '%s' -%}
+{%- assign time_left = end_date | minus: now -%}
+
+{%- if time_left > 0 -%}
+  <div class="countdown-timer py-8" style="background: {{ section.settings.bg_color }};">
+    <div class="container mx-auto px-6 text-center" style="max-width: var(--container-width);">
+      {%- if section.settings.heading != blank -%}
+        <p class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-primary);">
+          {{ section.settings.heading }}
+        </p>
+      {%- endif -%}
+
+      <div class="countdown-timer__display flex justify-center gap-4">
+        <div class="countdown-timer__unit text-center">
+          <div class="countdown-timer__value text-4xl font-bold rounded p-4" style="background: var(--color-surface); min-width: 80px;">
+            <span data-days>{{ time_left | divided_by: 86400 }}</span>
+          </div>
+          <p class="text-sm mt-2 uppercase tracking-wider" style="color: var(--color-text-secondary);">Days</p>
+        </div>
+
+        <div class="countdown-timer__unit text-center">
+          <div class="countdown-timer__value text-4xl font-bold rounded p-4" style="background: var(--color-surface); min-width: 80px;">
+            {%- assign hours_mod = time_left | modulo: 86400 | divided_by: 3600 -%}
+            <span data-hours>{{ hours_mod }}</span>
+          </div>
+          <p class="text-sm mt-2 uppercase tracking-wider" style="color: var(--color-text-secondary);">Hours</p>
+        </div>
+
+        <div class="countdown-timer__unit text-center">
+          <div class="countdown-timer__value text-4xl font-bold rounded p-4" style="background: var(--color-surface); min-width: 80px;">
+            {%- assign minutes_mod = time_left | modulo: 3600 | divided_by: 60 -%}
+            <span data-minutes>{{ minutes_mod }}</span>
+          </div>
+          <p class="text-sm mt-2 uppercase tracking-wider" style="color: var(--color-text-secondary);">Min</p>
+        </div>
+
+        <div class="countdown-timer__unit text-center">
+          <div class="countdown-timer__value text-4xl font-bold rounded p-4" style="background: var(--color-surface); min-width: 80px;">
+            {%- assign seconds_mod = time_left | modulo: 60 -%}
+            <span data-seconds>{{ seconds_mod }}</span>
+          </div>
+          <p class="text-sm mt-2 uppercase tracking-wider" style="color: var(--color-text-secondary);">Sec</p>
+        </div>
+      </div>
+
+      {%- if section.settings.message != blank -%}
+        <p class="mt-4" style="color: var(--color-text-secondary);">{{ section.settings.message }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const endDate = new Date('{{ section.settings.end_date }}').getTime();
+      
+      function update() {
+        const now = new Date().getTime();
+        const distance = endDate - now;
+
+        if (distance < 0) {
+          document.querySelector('.countdown-timer').innerHTML = '<div class="py-8 text-center">{{ section.settings.expired_message }}</div>';
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.querySelector('[data-days]').textContent = days;
+        document.querySelector('[data-hours]').textContent = hours;
+        document.querySelector('[data-minutes]').textContent = minutes;
+        document.querySelector('[data-seconds]').textContent = seconds;
+      }
+
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Countdown Timer",
+  "class": "section-countdown",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Sale Ends In"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End Date",
+      "info": "Format: 2024-12-31 23:59:59"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "Free shipping on orders over $100!"
+    },
+    {
+      "type": "text",
+      "id": "expired_message",
+      "label": "Expired Message",
+      "default": "This offer has expired."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown Timer"
+    }
+  ]
+}
+{% endschema %}

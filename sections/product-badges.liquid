@@ -1,0 +1,48 @@
+{% comment %}Product Badges - vrenyaCart Theme{% endcomment %}
+
+<div class="product-badges flex gap-2 flex-wrap">
+  {% if product.compare_at_price > product.price %}
+    <span class="badge bg-[var(--color-sale)] text-white px-2 py-1 text-xs font-semibold rounded">
+      {{ 'products.product.on_sale' | t | default: 'Sale' }}
+    </span>
+  {% endif %}
+  
+  {% unless product.available %}
+    <span class="badge bg-gray-500 text-white px-2 py-1 text-xs font-semibold rounded">
+      {{ 'products.product.sold_out' | t | default: 'Sold Out' }}
+    </span>
+  {% endunless %}
+  
+  {% if product.tags contains 'new' %}
+    <span class="badge bg-[var(--color-primary)] text-white px-2 py-1 text-xs font-semibold rounded">
+      New
+    </span>
+  {% endif %}
+  
+  {% if product.tags contains 'bestseller' %}
+    <span class="badge bg-[var(--color-success)] text-white px-2 py-1 text-xs font-semibold rounded">
+      Best Seller
+    </span>
+  {% endif %}
+  
+  {% if product.tags contains 'limited' %}
+    <span class="badge bg-[var(--color-warning)] text-white px-2 py-1 text-xs font-semibold rounded">
+      Limited Edition
+    </span>
+  {% endif %}
+  
+  {% if product.tags contains 'eco-friendly' %}
+    <span class="badge bg-green-600 text-white px-2 py-1 text-xs font-semibold rounded">
+      Eco-Friendly
+    </span>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Product Badges",
+  "class": "section-product-badges",
+  "settings": [],
+  "presets": [{ "name": "Product Badges" }]
+}
+{% endschema %}

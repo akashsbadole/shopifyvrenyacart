@@ -1,0 +1,64 @@
+{% comment %}
+  Product Tabs Section - vrenyaCart Theme
+{% endcomment %}
+
+<section class="product-tabs">
+  <div class="product-tabs__nav flex border-b" style="border-color: var(--color-border-subtle);">
+    {%- for i in (1..section.settings.tab_count) -%}
+      {%- assign title_key = 'tab_title_' | append: i -%}
+      <button
+        type="button"
+        class="product-tabs__tab flex-1 py-4 text-sm font-semibold uppercase tracking-wider{% if i == 1 %} active{% endif %}"
+        data-tab="{{ i }}"
+        onclick="openTab('{{ i }}')"
+        style="border-bottom: 2px solid transparent;"
+      >
+        {{ section.settings[title_key] | default: 'Tab ' | append: i }}
+      </button>
+    {%- endfor -%}
+  </div>
+
+  <div class="product-tabs__content py-6">
+    {%- for i in (1..section.settings.tab_count) -%}
+      {%- assign content_key = 'tab_content_' | append: i -%}
+      <div class="product-tabs__panel{% if i != 1 %} hidden{% endif %}" data-panel="{{ i }}">
+        {%- if section.settings[content_key] != blank -%}
+          {{ section.settings[content_key] }}
+        {%- else -%}
+          <p style="color: var(--color-text-secondary);">Tab content will appear here.</p>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+  window.openTab = function(n) {
+    document.querySelectorAll('.product-tabs__tab').forEach(tab => {
+      const isActive = tab.dataset.tab == n;
+      tab.classList.toggle('active', isActive);
+      tab.style.borderBottomColor = isActive ? 'var(--color-primary)' : 'transparent';
+    });
+    document.querySelectorAll('.product-tabs__panel').forEach(panel => {
+      panel.classList.toggle('hidden', panel.dataset.panel != n);
+    });
+  };
+</script>
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "class": "section-product-tabs",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "tab_count", "label": "Number of Tabs", "min": 2, "max": 5, "default": 3, "step": 1 },
+    { "type": "text", "id": "tab_title_1", "label": "Tab 1 Title", "default": "Description" },
+    { "type": "richtext", "id": "tab_content_1", "label": "Tab 1 Content" },
+    { "type": "text", "id": "tab_title_2", "label": "Tab 2 Title", "default": "Shipping" },
+    { "type": "richtext", "id": "tab_content_2", "label": "Tab 2 Content" },
+    { "type": "text", "id": "tab_title_3", "label": "Tab 3 Title", "default": "Returns" },
+    { "type": "richtext", "id": "tab_content_3", "label": "Tab 3 Content" }
+  ],
+  "presets": [{ "name": "Product Tabs" }]
+}
+{% endschema %}

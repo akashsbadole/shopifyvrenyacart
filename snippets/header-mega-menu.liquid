@@ -1,0 +1,9 @@
+{% comment %}Header Mega Menu{% endcomment %}
+<details class="mega-menu">
+  <summary>{{ link.title }}</summary>
+  <div class="mega-menu__content">
+    {% for childlink in link.links %}
+      <a href="{{ childlink.url }}">{{ childlink.title }}</a>
+    {% endfor %}
+  </div>
+</details>

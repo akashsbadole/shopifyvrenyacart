@@ -1,0 +1,144 @@
+{% comment %}
+  Bundle Builder Section - LUXE Theme
+  Dropshipping: Build-your-own bundle discounts
+{% endcomment %}
+
+<section class="bundle-builder py-16" style="padding: var(--section-spacing) 0;">
+  <div class="container mx-auto px-6" style="max-width: var(--container-width);">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="text-3xl font-bold text-center mb-2">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="text-center mb-8" style="color: var(--color-text-secondary);">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    <div class="grid md:grid-cols-3 gap-8">
+      {%- assign products = section.settings.products | split: ',' -%}
+      {%- for product_handle in products -%}
+        {%- assign product = all_products[product_handle] -%}
+        {%- if product != blank -%}
+          <div class="bundle-builder__item p-4 rounded text-center" style="background: var(--color-surface);">
+            <div class="aspect-square mb-4">
+              {%- if product.featured_media != blank -%}
+                {{ product.featured_media | image_url: width: 300 | image_tag: class: 'w-full h-full object-contain' }}
+              {%- endif -%}
+            </div>
+            <h3 class="font-medium mb-1">{{ product.title | escape }}</h3>
+            <p class="text-sm font-semibold mb-3">{{ product.price | money }}</p>
+            
+            <button
+              type="button"
+              class="w-full py-2 rounded text-sm"
+              style="border: 1px solid var(--color-border);"
+              onclick="toggleBundleItem(this)"
+            >
+              <span class="bundle-toggle">+ Add</span>
+            </button>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="bundle-builder__summary mt-12 p-6 rounded text-center" style="background: var(--color-surface);">
+      <p class="text-lg mb-4">
+        <span class="text-sm" style="color: var(--color-text-secondary);">Selected:</span>
+        <span class="font-semibold" id="bundleCount">0</span>
+        <span class="text-sm" style="color: var(--color-text-secondary);">items</span>
+      </p>
+      
+      {%- if section.settings.discount_text != blank -%}
+        <p class="text-2xl font-bold mb-4" style="color: var(--color-sale);">
+          {{ section.settings.discount_text }}
+        </p>
+      {%- endif -%}
+
+      <button
+        type="button"
+        class="py-4 px-8 font-semibold rounded"
+        style="background: var(--color-primary); color: var(--color-text-inverse);"
+        onclick="addBundleToCart()"
+      >
+        {{ section.settings.button_text | default: 'Add Bundle to Cart' }}
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    let selectedItems = [];
+
+    window.toggleBundleItem = function(btn) {
+      const span = btn.querySelector('.bundle-toggle');
+      const item = btn.closest('.bundle-builder__item');
+      const title = item.querySelector('h3').textContent;
+      
+      if (selectedItems.includes(title)) {
+        selectedItems = selectedItems.filter(i => i !== title);
+        span.textContent = '+ Add';
+        btn.style.background = '';
+      } else {
+        selectedItems.push(title);
+        span.textContent = '- Remove';
+        btn.style.background = 'var(--color-primary)';
+        btn.style.color = 'var(--color-text-inverse)';
+      }
+      
+      document.getElementById('bundleCount').textContent = selectedItems.length;
+    };
+
+    window.addBundleToCart = function() {
+      if (selectedItems.length === 0) {
+        alert('Please select at least one item');
+        return;
+      }
+      // Add items to cart
+      alert('Bundle added to cart!');
+    };
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Bundle Builder",
+  "class": "section-bundle",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build Your Bundle"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Save more when you buy together"
+    },
+    {
+      "type": "text",
+      "id": "products",
+      "label": "Products",
+      "info": "Comma-separated product handles"
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Discount Text",
+      "default": "Save 20% when you buy 3+"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Add Bundle to Cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle Builder"
+    }
+  ]
+}
+{% endschema %}

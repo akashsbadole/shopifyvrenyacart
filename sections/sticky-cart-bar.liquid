@@ -1,0 +1,80 @@
+{% comment %}
+  Sticky Add to Cart Bar - LUXE Theme
+  Conversion: Fixed bar that appears on scroll
+{% endcomment %}
+
+<div class="sticky-cart-bar fixed bottom-0 left-0 right-0 z-40 hidden" id="stickyCartBar" style="background: var(--color-surface); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
+  <div class="container mx-auto px-6 py-4 flex items-center justify-between" style="max-width: var(--container-width);">
+    <div class="sticky-cart-bar__product flex items-center gap-4">
+      {%- if product.featured_media != blank -%}
+        {{ product.featured_media | image_url: width: 80 | image_tag: class: 'w-16 h-16 object-cover rounded' }}
+      {%- endif -%}
+      <div>
+        <h4 class="font-semibold">{{ product.title | escape }}</h4>
+        <p class="text-sm" style="color: var(--color-text-secondary);">{{ product.price | money }}</p>
+      </div>
+    </div>
+
+    <div class="sticky-cart-bar__actions flex items-center gap-4">
+      <div class="sticky-cart-bar__qty flex items-center gap-2">
+        <button type="button" class="w-8 h-8 rounded flex items-center justify-center" style="border: 1px solid var(--color-border);" onclick="updateQty(-1)">-</button>
+        <span class="w-8 text-center" id="stickyQty">1</span>
+        <button type="button" class="w-8 h-8 rounded flex items-center justify-center" style="border: 1px solid var(--color-border);" onclick="updateQty(1)">+</button>
+      </div>
+
+      <button
+        type="button"
+        class="py-3 px-6 font-semibold rounded"
+        style="background: var(--color-primary); color: var(--color-text-inverse);"
+        onclick="addToCart()"
+      >
+        {{ 'products.product.add_to_cart' | t }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const bar = document.getElementById('stickyCartBar');
+    let qty = 1;
+
+    window.updateQty = function(delta) {
+      qty = Math.max(1, qty + delta);
+      document.getElementById('stickyQty').textContent = qty;
+    };
+
+    window.addToCart = function() {
+      window.vrenyaCart.cart.addItem({{ product.selected_or_first_available_variant.id }}, qty);
+    };
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 500) {
+        bar.classList.remove('hidden');
+      } else {
+        bar.classList.add('hidden');
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sticky ATC Bar",
+  "class": "section-sticky-cart",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "trigger_label",
+      "label": "Trigger Label",
+      "default": "Add to Cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Add to Cart"
+    }
+  ]
+}
+{% endschema %}

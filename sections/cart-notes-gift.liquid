@@ -1,0 +1,79 @@
+{% comment %}
+  Cart Notes & Gift - vrenyaCart Theme
+  Cart notes and gift message options
+{% endcomment %}
+
+<div class="cart-notes-gift">
+  {%- if section.settings.show_notes -%}
+  <div class="cart-notes mb-4">
+    <label for="cart-notes" class="block text-sm font-semibold mb-2">Order Notes</label>
+    <textarea
+      id="cart-notes"
+      name="note"
+      rows="3"
+      class="w-full p-3 rounded"
+      style="border: 1px solid var(--color-border);"
+      placeholder="{{ section.settings.notes_placeholder | default: 'Special instructions for your order...' }}"
+    ></textarea>
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_gift -%}
+  <div class="cart-gift p-4 rounded" style="background: var(--color-surface);">
+    <label class="flex items-center gap-3 cursor-pointer">
+      <input type="checkbox" name="gift" onchange="toggleGiftMessage(this)" class="w-5 h-5 rounded">
+      <span class="font-semibold">{{ section.settings.gift_label | default: 'This is a gift' }}</span>
+    </label>
+    
+    <div class="gift-message mt-3 hidden">
+      <textarea
+        name="gift_message"
+        rows="3"
+        class="w-full p-3 rounded"
+        style="border: 1px solid var(--color-border);"
+        placeholder="{{ section.settings.message_placeholder | default: 'Add a gift message...' }}"
+      ></textarea>
+      
+      {%- if section.settings.show_gift_wrap -%}
+      <label class="flex items-center gap-2 mt-3 cursor-pointer">
+        <input type="checkbox" name="gift_wrap" class="w-4 h-4 rounded">
+        <span class="text-sm">{{ section.settings.gift_wrap_label | default: 'Add gift wrapping' }}</span>
+        {%- if section.settings.gift_wrap_price > 0 -%}
+          <span class="text-sm font-semibold">({{ section.settings.gift_wrap_price | money }})</span>
+        {%- endif -%}
+      </label>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+
+<script>
+  function toggleGiftMessage(checkbox) {
+    const messageDiv = checkbox.closest('.cart-gift').querySelector('.gift-message');
+    if (checkbox.checked) {
+      messageDiv.classList.remove('hidden');
+    } else {
+      messageDiv.classList.add('hidden');
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Cart Notes & Gift",
+  "class": "section-cart-notes",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_notes", "label": "Show Order Notes", "default": true },
+    { "type": "text", "id": "notes_placeholder", "label": "Notes Placeholder" },
+    { "type": "checkbox", "id": "show_gift", "label": "Show Gift Options", "default": true },
+    { "type": "text", "id": "gift_label", "label": "Gift Label", "default": "This is a gift" },
+    { "type": "text", "id": "message_placeholder", "label": "Message Placeholder" },
+    { "type": "checkbox", "id": "show_gift_wrap", "label": "Show Gift Wrapping Option", "default": true },
+    { "type": "text", "id": "gift_wrap_label", "label": "Gift Wrap Label", "default": "Add gift wrapping" },
+    { "type": "text", "id": "gift_wrap_price", "label": "Gift Wrap Price" }
+  ],
+  "presets": [{ "name": "Cart Notes & Gift" }]
+}
+{% endschema %}

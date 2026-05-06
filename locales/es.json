@@ -1,0 +1,42 @@
+{
+  "general": {
+    "newsletter": {
+      "email_label": "Correo electrónico",
+      "subscribe_button": "Suscribirse",
+      "success": "¡Gracias por suscribirte!"
+    },
+    "search": {
+      "title": "Buscar",
+      "placeholder": "Buscar productos..."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Ir al contenido",
+    "close": "Cerrar"
+  },
+  "blogs": {
+    "article": {
+      "read_more": "Leer más"
+    }
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Tu carrito está vacío",
+    "continue_shopping": "Seguir comprando",
+    "remove": "Eliminar",
+    "checkout": "Pagar"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Añadir al carrito",
+      "sold_out": "Agotado",
+      "from": "Desde",
+      "free": "Gratis",
+      "on_sale": "Oferta"
+    },
+    "onboarding": {
+      "title": "Producto de ejemplo",
+      "price": "19,99"
+    }
+  }
+}

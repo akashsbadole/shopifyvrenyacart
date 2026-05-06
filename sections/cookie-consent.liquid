@@ -1,0 +1,90 @@
+{% comment %}
+  Cookie Consent Banner - LUXE Theme
+  GDPR/CCPA compliance
+{% endcomment %}
+
+<div class="cookie-banner fixed bottom-0 left-0 right-0 z-50 hidden" id="cookieBanner" style="background: var(--color-surface); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
+  <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4" style="max-width: var(--container-width);">
+    <div class="cookie-banner__text flex-1">
+      <p class="text-sm">
+        {{ section.settings.message | default: 'We use cookies to improve your experience. By continuing to browse, you agree to our cookie policy.' }}
+        {%- if section.settings.policy_link != blank -%}
+          <a href="{{ section.settings.policy_link }}" class="underline" style="color: var(--color-primary);">{{ section.settings.policy_text | default: 'Learn more' }}</a>
+        {%- endif -%}
+      </p>
+    </div>
+    <div class="cookie-banner__actions flex gap-3">
+      <button type="button" class="py-2 px-4 text-sm rounded" style="border: 1px solid var(--color-border);" onclick="acceptCookies('essential')">
+        {{ section.settings.reject_text | default: 'Essential Only' }}
+      </button>
+      <button type="button" class="py-2 px-4 text-sm rounded" style="background: var(--color-primary); color: var(--color-text-inverse);" onclick="acceptCookies('all')">
+        {{ section.settings.accept_text | default: 'Accept All' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const banner = document.getElementById('cookieBanner');
+    const consent = localStorage.getItem('cookie_consent');
+    
+    if (!consent) {
+      banner.classList.remove('hidden');
+    }
+
+    window.acceptCookies = function(type) {
+      localStorage.setItem('cookie_consent', type);
+      localStorage.setItem('cookie_consent_date', new Date().toISOString());
+      banner.classList.add('hidden');
+      
+      if (type === 'all' && window.enableAnalytics) {
+        window.enableAnalytics();
+      }
+    };
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Cookie Consent",
+  "class": "section-cookie",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "We use cookies to improve your shopping experience. By continuing, you agree to our use of cookies."
+    },
+    {
+      "type": "url",
+      "id": "policy_link",
+      "label": "Policy Link"
+    },
+    {
+      "type": "text",
+      "id": "policy_text",
+      "label": "Policy Link Text",
+      "default": "Learn more"
+    },
+    {
+      "type": "text",
+      "id": "accept_text",
+      "label": "Accept Button",
+      "default": "Accept All"
+    },
+    {
+      "type": "text",
+      "id": "reject_text",
+      "label": "Reject Button",
+      "default": "Essential Only"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cookie Consent"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,63 @@
+{% comment %}
+  Swatch Filters - vrenyaCart Theme
+  Color/material swatch filtering for collections
+{% endcomment %}
+
+<div class="swatch-filters">
+  <p class="text-sm font-semibold mb-2">Filter by:</p>
+  <div class="flex flex-wrap gap-2">
+    {%- for i in (1..section.settings.swatch_count) -%}
+      {%- assign name_key = 'swatch_name_' | append: i -%}
+      {%- assign color_key = 'swatch_color_' | append: i -%}
+      
+      <button
+        type="button"
+        class="swatch-filter flex items-center gap-2 px-3 py-2 rounded transition-all"
+        style="border: 1px solid var(--color-border);"
+        data-filter="{{ section.settings[name_key] | downcase }}"
+        onclick="toggleSwatchFilter(this)"
+      >
+        <span class="w-4 h-4 rounded-full" style="background: {{ section.settings[color_key] }};"></span>
+        <span class="text-sm">{{ section.settings[name_key] }}</span>
+      </button>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  function toggleSwatchFilter(btn) {
+    btn.classList.toggle('active');
+    btn.style.background = btn.classList.contains('active') ? 'var(--color-primary)' : 'transparent';
+    btn.style.color = btn.classList.contains('active') ? 'var(--color-text-inverse)' : '';
+    // Trigger collection filter
+    const filterName = btn.dataset.filter;
+    const activeFilters = [];
+    document.querySelectorAll('.swatch-filter.active').forEach(f => activeFilters.push(f.dataset.filter));
+    // Apply filter via URL parameter
+    if (activeFilters.length > 0) {
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('filter', activeFilters.join(','));
+      window.location.href = newUrl.toString();
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Swatch Filters",
+  "class": "section-swatch-filters",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "swatch_count", "label": "Number of Swatches", "min": 2, "max": 8, "default": 4, "step": 1 },
+    { "type": "text", "id": "swatch_name_1", "label": "Swatch 1 Name", "default": "Black" },
+    { "type": "color", "id": "swatch_color_1", "label": "Swatch 1 Color", "default": "#000000" },
+    { "type": "text", "id": "swatch_name_2", "label": "Swatch 2 Name", "default": "White" },
+    { "type": "color", "id": "swatch_color_2", "label": "Swatch 2 Color", "default": "#ffffff" },
+    { "type": "text", "id": "swatch_name_3", "label": "Swatch 3 Name", "default": "Red" },
+    { "type": "color", "id": "swatch_color_3", "label": "Swatch 3 Color", "default": "#dc2626" },
+    { "type": "text", "id": "swatch_name_4", "label": "Swatch 4 Name", "default": "Blue" },
+    { "type": "color", "id": "swatch_color_4", "label": "Swatch 4 Color", "default": "#2563eb" }
+  ],
+  "presets": [{ "name": "Swatch Filters" }]
+}
+{% endschema %}

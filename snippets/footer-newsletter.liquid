@@ -1,0 +1,12 @@
+{% comment %}Footer Newsletter{% endcomment %}
+<div class="footer-newsletter">
+  <h3>{{ section.settings.newsletter_title | default: 'Subscribe to our newsletter' }}</h3>
+  <p>{{ section.settings.newsletter_text | default: 'Get the latest updates and exclusive offers.' }}</p>
+  {% form 'customer', class: 'newsletter-form' %}
+    <input type="email" name="contact[email]" placeholder="{{ 'general.newsletter.email_label' | t }}" required>
+    <button type="submit">{{ 'general.newsletter.subscribe_button' | t }}</button>
+    {% if form.posted_successfully? %}
+      <p>{{ 'general.newsletter.success' | t }}</p>
+    {% endif %}
+  {% endform %}
+</div>

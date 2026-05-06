@@ -1,0 +1,76 @@
+{% comment %}
+  Image Hotspot Section - vrenyaCart Theme
+  Product image with clickable hotspots
+{% endcomment %}
+
+<div class="image-hotspot relative" data-hotspots>
+  {%- assign product = all_products[section.settings.product] -%}
+  {%- if product != blank and product.featured_media != blank -%}
+    {{ product.featured_media | image_url: width: 1200 | image_tag: class: 'w-full', id: 'hotspotImage' }}
+  {%- else -%}
+    {{ 'product-1' | placeholder_svg_tag: 'w-full' }}
+  {%- endif -%}
+
+  {%- for i in (1..section.settings.hotspot_count) -%}
+    {%- assign x_key = 'hotspot_x_' | append: i -%}
+    {%- assign y_key = 'hotspot_y_' | append: i -%}
+    {%- assign product_key = 'hotspot_product_' | append: i -%}
+    
+    <button
+      type="button"
+      class="hotspot__point absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center animate-pulse"
+      style="left: {{ section.settings[x_key] }}%; top: {{ section.settings[y_key] }}%; background: var(--color-primary); color: var(--color-text-inverse);"
+      data-product="{{ section.settings[product_key] }}"
+      onclick="showHotspotProduct('{{ section.settings[product_key] }}')"
+      aria-label="View product"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+      </svg>
+    </button>
+  {%- endfor -%}
+</div>
+
+<div class="hotspot__modal fixed inset-0 z-50 hidden" id="hotspotModal" data-modal>
+  <div class="hotspot__overlay fixed inset-0 bg-black/50" onclick="closeHotspotModal()"></div>
+  <div class="hotspot__content fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded p-6">
+    <button type="button" class="absolute top-4 right-4" onclick="closeHotspotModal()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div id="hotspotProductContent"></div>
+  </div>
+</div>
+
+<script>
+  function showHotspotProduct(handle) {
+    fetch('/products/' + handle + '?view=quick')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('hotspotProductContent').innerHTML = html;
+        document.getElementById('hotspotModal').classList.remove('hidden');
+      });
+  }
+
+  function closeHotspotModal() {
+    document.getElementById('hotspotModal').classList.add('hidden');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Image Hotspots",
+  "class": "section-image-hotspots",
+  "tag": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Base Product" },
+    { "type": "range", "id": "hotspot_count", "label": "Number of Hotspots", "min": 1, "max": 5, "default": 3, "step": 1 },
+    { "type": "range", "id": "hotspot_x_1", "label": "Hotspot 1 X Position", "min": 0, "max": 100, "default": 30 },
+    { "type": "range", "id": "hotspot_y_1", "label": "Hotspot 1 Y Position", "min": 0, "max": 100, "default": 40 },
+    { "type": "product", "id": "hotspot_product_1", "label": "Hotspot 1 Product" },
+    { "type": "range", "id": "hotspot_x_2", "label": "Hotspot 2 X Position", "min": 0, "max": 100, "default": 60 },
+    { "type": "range", "id": "hotspot_y_2", "label": "Hotspot 2 Y Position", "min": 0, "max": 100, "default": 50 },
+    { "type": "product", "id": "hotspot_product_2", "label": "Hotspot 2 Product" }
+  ],
+  "presets": [{ "name": "Image Hotspots" }]
+}
+{% endschema %}

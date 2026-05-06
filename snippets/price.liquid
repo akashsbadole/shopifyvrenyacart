@@ -1,0 +1,44 @@
+{% comment %}
+  Price Snippet - LUXE Theme
+  Renders price with sale formatting
+{% endcomment %}
+
+{%- assign product = product | default: blank_product -%}
+
+<div class="price{% if price_classes %} {{ price_classes }}{% endif %}">
+  {%- if product.price_varies -%}
+    <span class="price__from">{{ 'products.product.from' | t }}</span>
+  {%- endif -%}
+
+  <span class="price__current{% if product.compare_at_price > product.price %} on-sale{% endif %}">
+    {%- if product.price == 0 -%}
+      {{ 'products.product.free' | t }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </span>
+
+  {%- if product.compare_at_price > product.price -%}
+    <span class="price__compare">
+      {{ product.compare_at_price | money }}
+    </span>
+    <span class="price__sale-badge">
+      -{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%
+    </span>
+  {%- endif -%}
+
+  {%- if product.unit_price_measurement -%}
+    <span class="price__unit">
+      ({{ product.unit_price | money }}
+      <span aria-hidden="true">/</span>
+      {%- if product.unit_price_measurement.reference_value != 1 -%}
+        {{ product.unit_price_measurement.reference_value }}
+      {%- endif -%}
+      {{ product.unit_price_measurement.reference_unit }})
+    </span>
+  {%- endif -%}
+
+  {%- if product.available == false -%}
+    <span class="price__sold-out">{{ 'products.product.sold_out' | t }}</span>
+  {%- endif -%}
+</div>

@@ -1,0 +1,40 @@
+{% comment %}Image Zoom - vrenyaCart Theme{% endcomment %}
+
+<style>
+  .zoom-container {
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+  .zoom-container img {
+    transition: transform 0.3s ease;
+  }
+  .zoom-container:hover img {
+    transform: scale({{ section.settings.zoom_level | default: 1.5 }});
+  }
+</style>
+
+<div class="zoom-container" data-zoom>
+  {{ product.featured_image | image_url: width: 1200 | image_tag: 
+    class: 'w-full h-full object-cover',
+    loading: 'eager'
+  }}
+</div>
+
+{% schema %}
+{
+  "name": "Image Zoom",
+  "class": "section-image-zoom",
+  "settings": [
+    {
+      "type": "range",
+      "id": "zoom_level",
+      "min": 1.2,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.5,
+      "label": "Zoom Level"
+    }
+  ],
+  "presets": [{ "name": "Image Zoom" }]
+}
+{% endschema %}

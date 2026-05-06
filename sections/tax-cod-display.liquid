@@ -1,0 +1,44 @@
+{% comment %}
+  Tax & COD Display - vrenyaCart Theme
+  Shows GST invoice request and COD availability
+{% endcomment %}
+
+<div class="tax-cod-display">
+  {%- if section.settings.show_gst -%}
+  <div class="tax-display flex items-center gap-2 p-3 rounded mb-3" style="background: var(--color-surface);">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+    </svg>
+    <div>
+      <p class="text-sm font-medium">GST Invoice Available</p>
+      <p class="text-xs" style="color: var(--color-text-secondary);">Request at checkout</p>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_cod -%}
+  <div class="cod-display flex items-center gap-2 p-3 rounded" style="background: var(--color-surface);">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+    </svg>
+    <div>
+      <p class="text-sm font-medium">Cash on Delivery Available</p>
+      <p class="text-xs" style="color: var(--color-text-secondary);">{{ section.settings.cod_charge | default: 'Pay when you receive' }}</p>
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Tax & COD Display",
+  "class": "section-tax-cod",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "show_gst", "label": "Show GST Invoice Option", "default": true },
+    { "type": "checkbox", "id": "show_cod", "label": "Show Cash on Delivery", "default": true },
+    { "type": "text", "id": "cod_charge", "label": "COD Message", "default": "Pay when you receive" }
+  ],
+  "presets": [{ "name": "Tax & COD Display" }]
+}
+{% endschema %}

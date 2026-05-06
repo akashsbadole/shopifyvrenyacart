@@ -1,0 +1,97 @@
+{% comment %}Cart Drawer - vrenyaCart Theme{% endcomment %}
+
+<dialog id="cart-drawer" class="cart-drawer min-h-full ml-auto">
+  <div class="fixed inset-0 bg-black/50" onclick="closeCartDrawer()"></div>
+  
+  <div class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-xl flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--color-border);">
+      <h2 class="text-lg font-semibold">{{ 'cart.title' | t }}</h2>
+      <button onclick="closeCartDrawer()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="flex-1 overflow-auto p-4">
+      {% if cart.item_count > 0 %}
+        <ul class="space-y-4">
+          {% for item in cart.items %}
+            <li class="flex gap-4">
+              <a href="{{ item.url }}">
+                <img 
+                  src="{{ item.image | image_url: width: 100, height: 100 }}" 
+                  alt="{{ item.title }}"
+                  width="100"
+                  height="100"
+                  class="w-20 h-20 object-cover rounded">
+              </a>
+              <div class="flex-1">
+                <a href="{{ item.url }}" class="font-medium">{{ item.title }}</a>
+                {% if item.variant_title != 'Default Title' %}
+                  <p class="text-sm" style="color: var(--color-text-secondary);">{{ item.variant_title }}</p>
+                {% endif %}
+                <p class="text-sm">{{ item.price | money }} x {{ item.quantity }}</p>
+                
+                {% form 'cart', id: 'cart-drawer-update-' | append: item.key %}
+                  <input type="hidden" name="line" value="{{ forloop.index }}">
+                  <div class="flex items-center gap-2 mt-2">
+                    <button type="submit" name="update" class="w-8 h-8 border rounded" aria-label="Decrease quantity">-</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="submit" name="update" class="w-8 h-8 border rounded" aria-label="Increase quantity">+</button>
+                  </div>
+                {% endform %}
+              </div>
+              <form action="{{ routes.cart_url }}" method="post">
+                <input type="hidden" name="line" value="{{ forloop.index }}">
+                <button type="submit" name="delete" aria-label="Remove item">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-center py-8" style="color: var(--color-text-secondary);">{{ 'cart.empty' | t }}</p>
+      {% endif %}
+    </div>
+    
+    {% if cart.item_count > 0 %}
+      <div class="border-t p-4" style="border-color: var(--color-border);">
+        <div class="flex justify-between mb-4">
+          <span>Subtotal</span>
+          <span class="font-semibold">{{ cart.total_price | money }}</span>
+        </div>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">
+            {{ 'cart.checkout' | t }}
+          </button>
+        </form>
+        <a href="{{ routes.cart_url }}" class="block mt-3 text-center text-sm underline">
+          {{ 'cart.continue_shopping' | t }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</dialog>
+
+<script>
+  function openCartDrawer() {
+    document.getElementById('cart-drawer').showModal();
+  }
+  
+  function closeCartDrawer() {
+    document.getElementById('cart-drawer').close();
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "class": "section-cart-drawer",
+  "settings": [],
+  "presets": [{ "name": "Cart Drawer" }]
+}
+{% endschema %}

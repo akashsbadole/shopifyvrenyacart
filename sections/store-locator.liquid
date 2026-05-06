@@ -1,0 +1,248 @@
+{% comment %}
+  Store Locator Section - LUXE Theme
+  Local Business: Google Maps integration
+  User can add their own API key from Shopify theme settings
+{% endcomment %}
+
+<section class="store-locator py-16" style="padding: var(--section-spacing) 0;">
+  <div class="store-locator__container container mx-auto px-6" style="max-width: var(--container-width);">
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="store-locator__info">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="text-3xl font-bold mb-4">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="mb-8" style="color: var(--color-text-secondary);">{{ section.settings.description }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.show_stores -%}
+        <div class="store-locator__stores space-y-4">
+          {%- for i in (1..section.settings.store_count) -%}
+            {%- assign name_key = 'store_name_' | append: i -%}
+            {%- assign address_key = 'store_address_' | append: i -%}
+            {%- assign hours_key = 'store_hours_' | append: i -%}
+            
+            <button
+              type="button"
+              class="store-locator__store w-full text-left p-4 rounded transition-all"
+              style="border: 1px solid var(--color-border);"
+              data-store="{{ i }}"
+              onclick="selectStore({{ i }})"
+            >
+              <h3 class="font-semibold mb-1">{{ section.settings[name_key] }}</h3>
+              <p class="text-sm" style="color: var(--color-text-secondary);">{{ section.settings[address_key] }}</p>
+              {%- if section.settings[hours_key] != blank -%}
+                <p class="text-sm mt-2" style="color: var(--color-text-secondary);">{{ section.settings[hours_key] }}</p>
+              {%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+
+        {%- if section.settings.enable_pickup -%}
+        <div class="store-locator__pickup mt-8 p-4 rounded" style="background: var(--color-surface);">
+          <div class="flex items-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <div>
+              <h3 class="font-semibold">{{ section.settings.pickup_title | default: 'Local Pickup Available' }}</h3>
+              <p class="text-sm" style="color: var(--color-text-secondary);">{{ section.settings.pickup_text | default: 'Pick up your order same day' }}</p>
+            </div>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+
+      <div class="store-locator__map">
+        <div
+          class="store-locator__map-wrapper rounded overflow-hidden"
+          style="min-height: 400px; background: var(--color-surface);"
+          id="storeMap"
+          data-api-key="{{ section.settings.google_maps_api_key }}"
+          data-stores="{{ section.settings.stores_json }}"
+        >
+          {%- if section.settings.google_maps_api_key == blank -%}
+            <div class="w-full h-full flex items-center justify-center p-8 text-center">
+              <div>
+                <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <h3 class="font-semibold mb-2">Google Maps</h3>
+                <p class="text-sm" style="color: var(--color-text-secondary);">Add your Google Maps API key in theme settings to enable the map</p>
+                <a href="/admin/themes/{{ theme.id }}/editor?previewPath=settings" class="text-sm underline" style="color: var(--color-primary);">Open Theme Settings</a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initMap() {
+    const mapContainer = document.getElementById('storeMap');
+    const apiKey = mapContainer.dataset.apiKey;
+    
+    if (!apiKey) return;
+    
+    const map = new google.maps.Map(mapContainer, {
+      zoom: 12,
+      center: { lat: 40.7128, lng: -74.0060 }
+    });
+    
+    const stores = JSON.parse(mapContainer.dataset.stores || '[]');
+    stores.forEach((store, index) => {
+      new google.maps.Marker({
+        position: { lat: store.lat, lng: store.lng },
+        map: map,
+        title: store.name
+      });
+    });
+  }
+
+  function selectStore(index) {
+    const buttons = document.querySelectorAll('[data-store]');
+    buttons.forEach(btn => {
+      btn.classList.remove('ring-2');
+      if (btn.dataset.store == index) {
+        btn.classList.add('ring-2');
+        btn.style.borderColor = 'var(--color-primary)';
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Store Locator",
+  "class": "section-store-locator",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find a Store"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Visit us in person for personalized service."
+    },
+    {
+      "type": "header",
+      "content": "Google Maps"
+    },
+    {
+      "type": "text",
+      "id": "google_maps_api_key",
+      "label": "Google Maps API Key",
+      "info": "Get your API key from Google Cloud Console"
+    },
+    {
+      "type": "header",
+      "content": "Stores"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stores",
+      "label": "Show Store List",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "store_count",
+      "label": "Number of Stores",
+      "min": 1,
+      "max": 5,
+      "default": 3,
+      "step": 1
+    },
+    {
+      "type": "text",
+      "id": "store_name_1",
+      "label": "Store 1 Name",
+      "default": "Downtown"
+    },
+    {
+      "type": "textarea",
+      "id": "store_address_1",
+      "label": "Store 1 Address",
+      "default": "123 Main St, City, State 12345"
+    },
+    {
+      "type": "text",
+      "id": "store_lat_1",
+      "label": "Store 1 Latitude",
+      "default": "40.7128"
+    },
+    {
+      "type": "text",
+      "id": "store_lng_1",
+      "label": "Store 1 Longitude",
+      "default": "-74.0060"
+    },
+    {
+      "type": "text",
+      "id": "store_hours_1",
+      "label": "Store 1 Hours",
+      "default": "Mon-Fri: 9am-6pm"
+    },
+    {
+      "type": "text",
+      "id": "store_name_2",
+      "label": "Store 2 Name"
+    },
+    {
+      "type": "textarea",
+      "id": "store_address_2",
+      "label": "Store 2 Address"
+    },
+    {
+      "type": "text",
+      "id": "store_name_3",
+      "label": "Store 3 Name"
+    },
+    {
+      "type": "textarea",
+      "id": "store_address_3",
+      "label": "Store 3 Address"
+    },
+    {
+      "type": "header",
+      "content": "Local Pickup"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pickup",
+      "label": "Show Local Pickup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pickup_title",
+      "label": "Pickup Title",
+      "default": "Local Pickup Available"
+    },
+    {
+      "type": "text",
+      "id": "pickup_text",
+      "label": "Pickup Text",
+      "default": "Ready for pickup in 2 hours"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store Locator"
+    }
+  ]
+}
+{% endschema %}

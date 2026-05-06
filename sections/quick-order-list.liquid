@@ -1,0 +1,94 @@
+{% comment %}
+  Quick Order List - vrenyaCart Theme
+  Quick bulk ordering from collection pages
+{% endcomment %}
+
+<section class="quick-order-list">
+  <div class="quick-order-list__header flex justify-between border-b py-3" style="border-color: var(--color-border-subtle);">
+    <div class="flex-1 font-semibold">Product</div>
+    <div class="w-24 text-center font-semibold">Price</div>
+    <div class="w-24 text-center font-semibold">Qty</div>
+    <div class="w-24 text-center font-semibold">Total</div>
+  </div>
+
+  {%- assign products = section.settings.products | split: ',' -%}
+  {%- for product_handle in products -%}
+    {%- assign product = all_products[product_handle] -%}
+    {%- if product != blank -%}
+    <div class="quick-order-list__item flex items-center border-b py-4" style="border-color: var(--color-border-subtle);" data-product-id="{{ product.id }}">
+      <div class="flex-1 flex items-center gap-4">
+        {%- if product.featured_media != blank -%}
+          {{ product.featured_media | image_url: width: 80 | image_tag: class: 'w-16 h-16 object-cover rounded' }}
+        {%- endif -%}
+        <div>
+          <a href="{{ product.url }}" class="font-medium hover:opacity-70">{{ product.title }}</a>
+          <p class="text-sm" style="color: var(--color-text-secondary);">{{ product.price | money }}</p>
+        </div>
+      </div>
+      <div class="w-24 text-center">{{ product.price | money }}</div>
+      <div class="w-24 text-center">
+        <input type="number" min="0" value="0" class="w-16 p-2 text-center rounded border" style="border-color: var(--color-border);" onchange="updateQuickOrderTotal(this)" data-price="{{ product.price }}">
+      </div>
+      <div class="w-24 text-center font-semibold quick-order-total">$0.00</div>
+    </div>
+    {%- endif -%}
+  {%- endfor -%}
+
+  <div class="quick-order-list__footer flex justify-between py-4">
+    <div></div>
+    <div class="text-xl font-bold">Total: <span id="quickOrderGrandTotal">$0.00</span></div>
+  </div>
+
+  <button type="button" class="w-full py-4 font-semibold rounded" style="background: var(--color-primary); color: var(--color-text-inverse);" onclick="addQuickOrderToCart()">
+    Add All to Cart
+  </button>
+</section>
+
+<script>
+  function updateQuickOrderTotal(input) {
+    const qty = parseInt(input.value) || 0;
+    const price = parseFloat(input.dataset.price);
+    const total = qty * price;
+    input.closest('.quick-order-list__item').querySelector('.quick-order-total').textContent = '$' + total.toFixed(2);
+    updateGrandTotal();
+  }
+
+  function updateGrandTotal() {
+    let total = 0;
+    document.querySelectorAll('.quick-order-list__item').forEach(item => {
+      const qty = parseInt(item.querySelector('input').value) || 0;
+      const price = parseFloat(item.querySelector('input').dataset.price);
+      total += qty * price;
+    });
+    document.getElementById('quickOrderGrandTotal').textContent = '$' + total.toFixed(2);
+  }
+
+  function addQuickOrderToCart() {
+    const items = [];
+    document.querySelectorAll('.quick-order-list__item').forEach(item => {
+      const qty = parseInt(item.querySelector('input').value) || 0;
+      const variantId = item.dataset.productId;
+      if (qty > 0 && variantId) {
+        items.push({ id: variantId, quantity: qty });
+      }
+    });
+    if (items.length === 0) return;
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items })
+    }).then(() => window.vrenyaCart.cart.open());
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Quick Order List",
+  "class": "section-quick-order",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "products", "label": "Products", "info": "Comma-separated product handles" }
+  ],
+  "presets": [{ "name": "Quick Order List" }]
+}
+{% endschema %}

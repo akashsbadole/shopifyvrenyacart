@@ -1,0 +1,9 @@
+{% comment %}
+  Payment Icons Snippet - LUXE Theme
+{% endcomment %}
+
+<div class="payment-icons flex flex-wrap gap-2">
+  {% for type in shop.enabled_payment_types %}
+    {{ type | payment_type_svg_tag: class: 'w-8 h-5' }}
+  {% endfor %}
+</div>

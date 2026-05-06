@@ -1,0 +1,46 @@
+{% comment %}Product Videos - vrenyaCart Theme{% endcomment %}
+
+<div class="product-videos">
+  {% if section.settings.video_url != blank %}
+    <div class="video-container aspect-video mb-4">
+      {% if section.settings.video_url.type == 'youtube' %}
+        <iframe
+          src="https://www.youtube.com/embed/{{ section.settings.video_url | split: 'v=' | last }}"
+          class="w-full h-full"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      {% elsif section.settings.video_url.type == 'vimeo' %}
+        <iframe
+          src="https://player.vimeo.com/video/{{ section.settings.video_url | split: '/' | last }}"
+          class="w-full h-full"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      {% endif %}
+    </div>
+  {% elsif section.settings.video_file != blank %}
+    <div class="aspect-video">
+      {{ section.settings.video_file | video_tag: autoplay: false, controls: true, class: 'w-full h-full' }}
+    </div>
+  {% endif %}
+  
+  {% if section.settings.caption != blank %}
+    <p class="text-sm mt-2" style="color: var(--color-text-secondary);">{{ section.settings.caption }}</p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Product Videos",
+  "class": "section-product-videos",
+  "settings": [
+    { "type": "video_url", "id": "video_url", "label": "Video URL (YouTube/Vimeo)", "accept": ["youtube", "vimeo"] },
+    { "type": "video", "id": "video_file", "label": "or Upload Video File" },
+    { "type": "text", "id": "caption", "label": "Caption" }
+  ],
+  "presets": [{ "name": "Product Videos" }]
+}
+{% endschema %}

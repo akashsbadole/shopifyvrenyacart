@@ -1,0 +1,85 @@
+{% comment %}
+  Featured Product Section - LUXE Theme
+{% endcomment %}
+
+<section class="featured-product py-16" style="padding: var(--section-spacing) 0;">
+  <div class="container mx-auto px-6" style="max-width: var(--container-width);">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="featured-product__image">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 800 | image_tag: class: 'w-full aspect-square object-cover rounded' }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'w-full aspect-square' }}
+        {%- endif -%}
+      </div>
+      <div class="featured-product__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-primary);">
+            {{ section.settings.eyebrow }}
+          </p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="text-4xl font-bold mb-4">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="text-lg mb-6" style="color: var(--color-text-secondary);">
+            {{ section.settings.description }}
+          </p>
+        {%- endif -%}
+        {%- if section.settings.product != blank -%}
+          {%- assign product = all_products[section.settings.product] -%}
+          <div class="mb-6">
+            <p class="text-2xl font-bold">{{ product.price | money }}</p>
+          </div>
+          <a
+            href="{{ product.url }}"
+            class="inline-flex items-center gap-2 px-8 py-4 font-semibold rounded"
+            style="background: var(--color-primary); color: var(--color-text-inverse);"
+          >
+            {{ 'products.product.add_to_cart' | t }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Product",
+  "class": "section-featured-product",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product"
+    }
+  ]
+}
+{% endschema %}

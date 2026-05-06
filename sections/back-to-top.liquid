@@ -1,0 +1,46 @@
+{% comment %}
+  Back to Top Button - vrenyaCart Theme
+{% endcomment %}
+
+<div class="back-to-top fixed bottom-6 right-6 z-40" id="backToTop">
+  <button
+    type="button"
+    class="w-12 h-12 rounded-full flex items-center justify-center transition-all opacity-0"
+    style="background: var(--color-primary); color: var(--color-text-inverse);"
+    onclick="scrollToTop()"
+    aria-label="Back to top"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+  (function() {
+    const btn = document.getElementById('backToTop');
+    const icon = btn.querySelector('button');
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        icon.classList.remove('opacity-0');
+      } else {
+        icon.classList.add('opacity-0');
+      }
+    });
+
+    window.scrollToTop = function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Back to Top",
+  "class": "section-back-to-top",
+  "tag": "div",
+  "settings": [],
+  "presets": [{ "name": "Back to Top" }]
+}
+{% endschema %}

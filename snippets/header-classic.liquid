@@ -1,0 +1,14 @@
+{% comment %}Header Classic Style{% endcomment %}
+<a href="{{ routes.root_url }}" class="header__logo text-xl font-black tracking-tighter">
+  {% if settings.logo != blank %}
+    {% assign logo_height = settings.logo.width | divided_by: settings.logo.width | times: 60 %}
+    <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name | escape }}" width="200" height="{{ logo_height }}">
+  {% else %}
+    {{ shop.name }}
+  {% endif %}
+</a>
+<nav class="header__nav">
+  {% for link in menu.links %}
+    <a href="{{ link.url }}">{{ link.title }}</a>
+  {% endfor %}
+</nav>

@@ -1,0 +1,88 @@
+{% comment %}
+  Full Mega Menu - vrenyaCart Theme
+{% endcomment %}
+
+<div class="mega-menu hidden" data-mega-menu>
+  <div class="mega-menu__overlay fixed inset-0 bg-black/50" onclick="closeMegaMenu()"></div>
+  <div class="mega-menu__panel fixed left-0 top-[80px] right-0 bg-white overflow-auto">
+    <div class="mega-menu__container mx-auto px-6 py-8" style="max-width: var(--container-width);">
+      <div class="grid" style="grid-template-columns: repeat({{ section.settings.columns | default: 4 }}, minmax(0, 1fr)); gap: 2rem;">
+        {%- for i in (1..section.settings.columns) -%}
+          <div class="mega-menu__column">
+            {%- assign title_key = 'title_' | append: i -%}
+            {%- assign link_key = 'link_' | append: i -%}
+            {%- assign menu_key = 'menu_' | append: i -%}
+            
+            {%- if section.settings[title_key] != blank -%}
+              <a href="{{ section.settings[link_key] | default: '#' }}" class="font-semibold mb-3 block hover:opacity-70">
+                {{ section.settings[title_key] }}
+              </a>
+            {%- endif -%}
+            
+            {%- assign menu = linklists[section.settings[menu_key]] -%}
+            {%- if menu != blank -%}
+              <ul class="space-y-2">
+                {%- for link in menu.links -%}
+                  <li><a href="{{ link.url }}" class="text-sm hover:opacity-70" style="color: var(--color-text-secondary);">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+
+        {%- if section.settings.show_featured -%}
+        <div class="mega-menu__featured">
+          {%- assign product = all_products[section.settings.featured_product] -%}
+          {%- if product != blank -%}
+            <a href="{{ product.url }}" class="block p-4 rounded" style="background: var(--color-surface);">
+              <span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-primary);">Featured</span>
+              {%- if product.featured_media -%}
+                {{ product.featured_media | image_url: width: 200 | image_tag: class: 'w-full h-32 object-contain my-2' }}
+              {%- endif -%}
+              <p class="font-medium">{{ product.title }}</p>
+              <p class="font-semibold">{{ product.price | money }}</p>
+            </a>
+          {%- endif -%}
+        </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_promo -%}
+      <div class="mega-menu__promo mt-6 p-4 rounded flex items-center gap-4" style="background: {{ section.settings.promo_bg }};">
+        <span class="text-2xl">{{ section.settings.promo_icon }}</span>
+        <div>
+          <p class="font-semibold" style="color: {{ section.settings.promo_color }};">{{ section.settings.promo_title }}</p>
+          <p class="text-sm" style="color: {{ section.settings.promo_color }}; opacity: 0.8;">{{ section.settings.promo_text }}</p>
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  window.openMegaMenu = function() { document.querySelector('[data-mega-menu]')?.classList.remove('hidden'); };
+  window.closeMegaMenu = function() { document.querySelector('[data-mega-menu]')?.classList.add('hidden'); };
+</script>
+
+{% schema %}
+{
+  "name": "Mega Menu",
+  "tag": "div",
+  "settings": [
+    { "type": "range", "id": "columns", "label": "Columns", "min": 3, "max": 6, "default": 4, "step": 1 },
+    { "type": "text", "id": "title_1", "label": "Column 1 Title" },
+    { "type": "link_list", "id": "menu_1", "label": "Column 1 Menu" },
+    { "type": "text", "id": "title_2", "label": "Column 2 Title" },
+    { "type": "link_list", "id": "menu_2", "label": "Column 2 Menu" },
+    { "type": "text", "id": "title_3", "label": "Column 3 Title" },
+    { "type": "link_list", "id": "menu_3", "label": "Column 3 Menu" },
+    { "type": "checkbox", "id": "show_featured", "label": "Show Featured Product", "default": true },
+    { "type": "product", "id": "featured_product", "label": "Featured Product" },
+    { "type": "checkbox", "id": "show_promo", "label": "Show Promo Banner", "default": true },
+    { "type": "text", "id": "promo_icon", "label": "Promo Icon", "default": "🚚" },
+    { "type": "text", "id": "promo_title", "label": "Promo Title", "default": "Free Shipping" },
+    { "type": "text", "id": "promo_text", "label": "Promo Text", "default": "On orders over $50" }
+  ]
+}
+{% endschema %}

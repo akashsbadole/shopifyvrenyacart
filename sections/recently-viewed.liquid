@@ -1,0 +1,47 @@
+{% comment %}Recently Viewed - vrenyaCart Theme{% endcomment %}
+
+{% assign limit = section.settings.limit | default: 4 %}
+
+<div class="recently-viewed">
+  <h2 class="text-2xl font-bold mb-6">{{ section.settings.heading | default: 'Recently Viewed' }}</h2>
+  
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {% for product in collections['all'].products limit: limit %}
+      <div class="product-card">
+        <a href="{{ product.url }}">
+          {% if product.featured_image %}
+            <div class="aspect-square overflow-hidden bg-gray-100 mb-3">
+              <img 
+                src="{{ product.featured_image | image_url: width: 400, height: 400 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                width="400"
+                height="400"
+                class="w-full h-full object-cover hover:scale-105 transition-transform"
+                loading="lazy">
+            </div>
+          {% endif %}
+          <h3 class="font-medium text-sm">{{ product.title }}</h3>
+          <p class="text-sm mt-1">
+            {% if product.price_varies %}
+              From {{ product.price_min | money }}
+            {% else %}
+              {{ product.price | money }}
+            {% endif %}
+          </p>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Recently Viewed",
+  "class": "section-recently-viewed",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Recently Viewed", "label": "Heading" },
+    { "type": "range", "id": "limit", "min": 2, "max": 8, "default": 4, "label": "Products to show" }
+  ],
+  "presets": [{ "name": "Recently Viewed" }]
+}
+{% endschema %}

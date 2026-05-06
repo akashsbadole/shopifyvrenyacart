@@ -1,0 +1,82 @@
+{% comment %}Quick View - vrenyaCart Theme{% endcomment %}
+
+<dialog id="quick-view-{{ product.id }}" class="quick-view-modal fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 bg-black/50" onclick="closeQuickView('{{ product.id }}')"></div>
+  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
+    <button onclick="closeQuickView('{{ product.id }}')" class="absolute top-4 right-4 z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    
+    <div class="grid md:grid-cols-2 gap-6 p-6">
+      <div>
+        {% if product.featured_image %}
+          <img src="{{ product.featured_image | image_url: width: 600, height: 600 }}" alt="{{ product.title }}" width="600" height="600" class="w-full">
+        {% endif %}
+      </div>
+      
+      <div>
+        <h2 class="text-2xl font-bold">{{ product.title }}</h2>
+        
+        <div class="mt-2">
+          {% if product.price_varies %}
+            <span class="text-lg">From {{ product.price_min | money }}</span>
+          {% else %}
+            <span class="text-lg">{{ product.price | money }}</span>
+          {% endif %}
+          
+          {% if product.compare_at_price > product.price %}
+            <span class="ml-2 line-through text-gray-500">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+        </div>
+        
+        <p class="mt-4 text-sm" style="color: var(--color-text-secondary);">
+          {{ product.content | strip_html | truncate: 200 }}
+        </p>
+        
+        {% if product.available %}
+          {% form 'product', product, class: 'mt-4' %}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <button type="submit" class="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">
+              {{ 'products.product.add_to_cart' | t }}
+            </button>
+          {% endform %}
+        {% else %}
+          <button disabled class="w-full py-3 bg-gray-300 text-gray-600 font-semibold rounded">
+            {{ 'products.product.sold_out' | t }}
+          </button>
+        {% endif %}
+        
+        <a href="{{ product.url }}" class="block mt-3 text-center text-sm underline">
+          View Full Details
+        </a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  function openQuickView(productId) {
+    const dialog = document.getElementById('quick-view-' + productId);
+    if (dialog) {
+      dialog.showModal();
+    }
+  }
+  
+  function closeQuickView(productId) {
+    const dialog = document.getElementById('quick-view-' + productId);
+    if (dialog) {
+      dialog.close();
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Quick View",
+  "class": "section-quick-view",
+  "settings": [],
+  "presets": [{ "name": "Quick View" }]
+}
+{% endschema %}
