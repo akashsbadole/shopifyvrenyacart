@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="{{ settings.color_primary }}">
   <link rel="canonical" href="{{ canonical_url }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   {% if template == 'product' %}
   <meta name="robots" content="index, follow">
@@ -27,6 +29,56 @@
   {% render 'seo-schema' %}
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#0052FF',
+            'primary-container': '#0052FF',
+            'on-primary': '#ffffff',
+            'background': '#fbf9f9',
+            'surface': '#fbf9f9',
+            'surface-container-low': '#f5f3f3',
+            'surface-container-lowest': '#ffffff',
+            'surface-container': '#efeded',
+            'on-background': '#18181b',
+            'on-surface': '#18181b',
+            'on-surface-variant': '#71717a',
+            'outline': '#737688',
+            'outline-variant': '#c3c5d9',
+            'error': '#ba1a1a',
+            'secondary': '#5f5e5e',
+          },
+          fontFamily: {
+            'display': ['Plus Jakarta Sans', 'sans-serif'],
+            'body': ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          fontSize: {
+            'display': ['64px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'h1': ['40px', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '700' }],
+            'h2': ['32px', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'h3': ['24px', { lineHeight: '1.4', fontWeight: '600' }],
+            'body-md': ['16px', { lineHeight: '1.6', fontWeight: '400' }],
+            'body-lg': ['18px', { lineHeight: '1.6', fontWeight: '400' }],
+            'label-bold': ['14px', { lineHeight: '1', letterSpacing: '0.05em', fontWeight: '700' }],
+            'price': ['20px', { lineHeight: '1', fontWeight: '700' }],
+          },
+          spacing: {
+            'section-padding': '120px',
+            'container-max': '1440px',
+            'gutter': '32px',
+          },
+          borderRadius: {
+            'DEFAULT': '4px',
+          }
+        }
+      }
+    }
+  </script>
 
   <script>
     document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
@@ -70,15 +122,15 @@
     Skip to content
   </a>
 
-  {% sections 'header-group' %}
+  {% section 'header' %}
 
   <main id="main-content" role="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
 
-  {% sections 'footer-group' %}
+  {% section 'footer' %}
 
-  {% sections 'overlay-group' %}
+  {% section 'cart-drawer' %}
 
   {%- comment -%} Async JS for performance {%- endcomment -%}
   <script src="{{ 'theme.js' | asset_url }}" async></script>

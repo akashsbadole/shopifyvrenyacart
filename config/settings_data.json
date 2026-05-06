@@ -1,0 +1,13 @@
+{
+  "current": {
+    "sections": {
+      "header-group": {
+        "type": "header"
+      },
+      "footer-group": {
+        "type": "footer"
+      }
+    }
+  },
+  "presets": {}
+}

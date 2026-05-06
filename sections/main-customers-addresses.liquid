@@ -1,0 +1,94 @@
+{% comment %}Customer Addresses Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <a href="{{ routes.account_url }}" class="text-[var(--color-primary)] hover:opacity-70 mb-6 inline-block">← Back to Account</a>
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-4xl font-bold text-[var(--color-text-primary)]">Addresses</h1>
+    <button 
+      class="px-4 py-2 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90 transition-opacity"
+      onclick="Shopify.CustomerAddress.toggleNewForm(); return false;"
+    >
+      Add New Address
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-[var(--color-surface)] p-6 rounded">
+      <h2 class="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Default Address</h2>
+      <div class="text-[var(--color-text-secondary)]">
+        {{ customer.default_address | format_address }}
+      </div>
+      <div class="mt-4 flex gap-4">
+        <button 
+          class="text-[var(--color-primary)] hover:opacity-70"
+          onclick="Shopify.CustomerAddress.editForm('{{ customer.default_address.id }}'); return false;"
+        >
+          Edit
+        </button>
+        <button 
+          class="text-[var(--color-error)] hover:opacity-70"
+          onclick="Shopify.CustomerAddress.destroy('{{ customer.default_address.id }}'); return false;"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+
+    {% for address in customer.addresses %}
+      {% unless address == customer.default_address %}
+        <div class="bg-[var(--color-surface)] p-6 rounded">
+          <h2 class="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Address {{ forloop.index }}</h2>
+          <div class="text-[var(--color-text-secondary)]">
+            {{ address | format_address }}
+          </div>
+          <div class="mt-4 flex gap-4">
+            <button 
+              class="text-[var(--color-primary)] hover:opacity-70"
+              onclick="Shopify.CustomerAddress.editForm('{{ address.id }}'); return false;"
+            >
+              Edit
+            </button>
+            <button 
+              class="text-[var(--color-error)] hover:opacity-70"
+              onclick="Shopify.CustomerAddress.destroy('{{ address.id }}'); return false;"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      {% endunless %}
+    {% endfor %}
+  </div>
+
+  <div id="add_address_form" class="hidden mt-8 bg-[var(--color-surface)] p-6 rounded">
+    {% form 'customer_address', customer.new_address %}
+      <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">New Address</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" name="address[first_name]" placeholder="First Name" class="h-12 px-4 border border-[var(--color-border)] rounded">
+        <input type="text" name="address[last_name]" placeholder="Last Name" class="h-12 px-4 border border-[var(--color-border)] rounded">
+      </div>
+      <input type="text" name="address[company]" placeholder="Company" class="w-full mt-4 h-12 px-4 border border-[var(--color-border)] rounded">
+      <input type="text" name="address[address1]" placeholder="Address" class="w-full mt-4 h-12 px-4 border border-[var(--color-border)] rounded">
+      <input type="text" name="address[address2]" placeholder="Apartment, suite, etc." class="w-full mt-4 h-12 px-4 border border-[var(--color-border)] rounded">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <input type="text" name="address[city]" placeholder="City" class="h-12 px-4 border border-[var(--color-border)] rounded">
+        <input type="text" name="address[zip]" placeholder="Postal code" class="h-12 px-4 border border-[var(--color-border)] rounded">
+      </div>
+      <input type="text" name="address[country]" placeholder="Country" class="w-full mt-4 h-12 px-4 border border-[var(--color-border)] rounded">
+      <div class="mt-6 flex gap-4">
+        <button type="submit" class="px-6 py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">Save Address</button>
+        <button type="button" class="px-6 py-3 border border-[var(--color-border)] rounded" onclick="Shopify.CustomerAddress.toggleNewForm(); return false;">Cancel</button>
+      </div>
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Addresses",
+  "tag": "section",
+  "class": "section-addresses",
+  "settings": []
+}
+{% endschema %}

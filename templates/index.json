@@ -1,9 +1,33 @@
 {
   "sections": {
-    "main": {
-      "type": "main-template",
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "social_proof": {
+      "type": "social-proof",
+      "settings": {}
+    },
+    "slideshow": {
+      "type": "slideshow",
+      "settings": {}
+    },
+    "featured_collections": {
+      "type": "featured-collection",
+      "settings": {}
+    },
+    "featured_products": {
+      "type": "featured-collection",
+      "settings": {}
+    },
+    "testimonials": {
+      "type": "press-coverage",
+      "settings": {}
+    },
+    "bento_grid": {
+      "type": "bento-grid",
       "settings": {}
     }
   },
-  "order": ["main"]
+  "order": ["hero", "social_proof", "slideshow", "featured_collections", "featured_products", "testimonials", "bento_grid"]
 }

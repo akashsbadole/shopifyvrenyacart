@@ -1,50 +1,52 @@
-{% comment %}Cart Drawer - vrenyaCart Theme{% endcomment %}
+{% comment %}Cart Drawer - LUXE Theme{% endcomment %}
 
-<dialog id="cart-drawer" class="cart-drawer min-h-full ml-auto">
+<div id="cart-drawer" class="fixed inset-0 z-50 hidden">
   <div class="fixed inset-0 bg-black/50" onclick="closeCartDrawer()"></div>
   
   <div class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-xl flex flex-col">
-    <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--color-border);">
-      <h2 class="text-lg font-semibold">{{ 'cart.title' | t }}</h2>
-      <button onclick="closeCartDrawer()">
+    <div class="flex items-center justify-between p-6 border-b border-zinc-100">
+      <h2 class="text-lg font-bold text-zinc-900">Your Cart ({{ cart.item_count }})</h2>
+      <button onclick="closeCartDrawer()" class="p-2 hover:opacity-70">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
     
-    <div class="flex-1 overflow-auto p-4">
-      {% if cart.item_count > 0 %}
-        <ul class="space-y-4">
+    <div class="flex-1 overflow-auto p-6">
+      {% if cart.items.size > 0 %}
+        <ul class="space-y-6">
           {% for item in cart.items %}
             <li class="flex gap-4">
-              <a href="{{ item.url }}">
-                <img 
-                  src="{{ item.image | image_url: width: 100, height: 100 }}" 
-                  alt="{{ item.title }}"
-                  width="100"
-                  height="100"
-                  class="w-20 h-20 object-cover rounded">
+              <a href="{{ item.url }}" class="w-20 h-24 bg-white border border-zinc-200 flex-shrink-0">
+                {% if item.image %}
+                  {{ item.image | image_url: width: 100 | image_tag: class: 'w-full h-full object-contain', loading: 'lazy' }}
+                {% endif %}
               </a>
               <div class="flex-1">
-                <a href="{{ item.url }}" class="font-medium">{{ item.title }}</a>
+                <a href="{{ item.url }}" class="font-medium text-zinc-900 hover:text-[#0052FF]">{{ item.title }}</a>
                 {% if item.variant_title != 'Default Title' %}
-                  <p class="text-sm" style="color: var(--color-text-secondary);">{{ item.variant_title }}</p>
+                  <p class="text-sm text-zinc-500">{{ item.variant_title }}</p>
                 {% endif %}
-                <p class="text-sm">{{ item.price | money }} x {{ item.quantity }}</p>
+                <p class="text-sm text-zinc-900 mt-1">{{ item.price | money }} × {{ item.quantity }}</p>
                 
-                {% form 'cart', id: 'cart-drawer-update-' | append: item.key %}
-                  <input type="hidden" name="line" value="{{ forloop.index }}">
-                  <div class="flex items-center gap-2 mt-2">
-                    <button type="submit" name="update" class="w-8 h-8 border rounded" aria-label="Decrease quantity">-</button>
-                    <span>{{ item.quantity }}</span>
-                    <button type="submit" name="update" class="w-8 h-8 border rounded" aria-label="Increase quantity">+</button>
-                  </div>
-                {% endform %}
+                <div class="flex items-center gap-2 mt-2">
+                  <form action="{{ routes.cart_change_url }}" method="post">
+                    <input type="hidden" name="line" value="{{ forloop.index }}">
+                    <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
+                    <button type="submit" class="w-6 h-6 border border-zinc-200 rounded flex items-center justify-center text-zinc-600 hover:border-[#0052FF]">-</button>
+                  </form>
+                  <span class="text-sm">{{ item.quantity }}</span>
+                  <form action="{{ routes.cart_change_url }}" method="post">
+                    <input type="hidden" name="line" value="{{ forloop.index }}">
+                    <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
+                    <button type="submit" class="w-6 h-6 border border-zinc-200 rounded flex items-center justify-center text-zinc-600 hover:border-[#0052FF]">+</button>
+                  </form>
+                </div>
               </div>
               <form action="{{ routes.cart_url }}" method="post">
                 <input type="hidden" name="line" value="{{ forloop.index }}">
-                <button type="submit" name="delete" aria-label="Remove item">
+                <button type="submit" name="delete" aria-label="Remove item" class="text-zinc-400 hover:text-red-600">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                   </svg>
@@ -54,37 +56,52 @@
           {% endfor %}
         </ul>
       {% else %}
-        <p class="text-center py-8" style="color: var(--color-text-secondary);">{{ 'cart.empty' | t }}</p>
+        <div class="text-center py-12">
+          <svg class="w-16 h-16 mx-auto text-zinc-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <p class="text-zinc-500 mb-4">Your cart is empty</p>
+          <a href="{{ routes.collections_url }}" class="text-[#0052FF] hover:opacity-70">Continue Shopping</a>
+        </div>
       {% endif %}
     </div>
     
-    {% if cart.item_count > 0 %}
-      <div class="border-t p-4" style="border-color: var(--color-border);">
+    {% if cart.items.size > 0 %}
+      <div class="border-t border-zinc-100 p-6">
         <div class="flex justify-between mb-4">
-          <span>Subtotal</span>
-          <span class="font-semibold">{{ cart.total_price | money }}</span>
+          <span class="text-zinc-600">Subtotal</span>
+          <span class="font-bold text-zinc-900">{{ cart.total_price | money }}</span>
         </div>
-        <form action="{{ routes.cart_url }}" method="post">
-          <button type="submit" name="checkout" class="w-full py-3 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90">
-            {{ 'cart.checkout' | t }}
+        <form action="{{ routes.checkout_url }}" method="get">
+          <button type="submit" class="w-full py-4 bg-[#0052FF] text-white font-bold rounded hover:bg-[#0038b6] transition-colors">
+            Proceed to Checkout
           </button>
         </form>
-        <a href="{{ routes.cart_url }}" class="block mt-3 text-center text-sm underline">
-          {{ 'cart.continue_shopping' | t }}
+        <a href="{{ routes.cart_url }}" class="block mt-3 text-center text-sm text-zinc-500 hover:text-[#0052FF]">
+          View Cart
         </a>
       </div>
     {% endif %}
   </div>
-</dialog>
+</div>
 
 <script>
   function openCartDrawer() {
-    document.getElementById('cart-drawer').showModal();
+    document.getElementById('cart-drawer').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
   }
   
   function closeCartDrawer() {
-    document.getElementById('cart-drawer').close();
+    document.getElementById('cart-drawer').classList.add('hidden');
+    document.body.style.overflow = '';
   }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('[data-open-cart]') || e.target.closest('[data-open-cart]')) {
+      e.preventDefault();
+      openCartDrawer();
+    }
+  });
 </script>
 
 {% schema %}

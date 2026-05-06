@@ -1,0 +1,37 @@
+{% comment %}Collections List Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-8">All Collections</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {% for collection in collections %}
+      {% unless collection.handle == 'frontpage' %}
+        <a class="group block" href="{{ collection.url }}">
+          <div class="aspect-[3/4] bg-[var(--color-surface)] overflow-hidden mb-4 relative">
+            {% if collection.image %}
+              {{ collection.image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500', loading: 'lazy' }}
+            {% else %}
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-6xl text-[var(--color-border-subtle)]">📁</span>
+              </div>
+            {% endif %}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="absolute bottom-8 left-8 right-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <h2 class="text-2xl font-semibold">{{ collection.title }}</h2>
+              <p class="text-sm uppercase tracking-widest opacity-70">{{ collection.products_count }} products</p>
+            </div>
+          </div>
+        </a>
+      {% endunless %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "tag": "section",
+  "class": "section-collections-list",
+  "settings": []
+}
+{% endschema %}

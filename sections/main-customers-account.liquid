@@ -1,0 +1,56 @@
+{% comment %}Customer Account Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-8">My Account</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="md:col-span-2">
+      <h2 class="text-2xl font-semibold text-[var(--color-text-primary)] mb-6">Order History</h2>
+      {% if customer.orders.size > 0 %}
+        <div class="space-y-4">
+          {% for order in customer.orders %}
+            <div class="border border-[var(--color-border-subtle)] p-6 rounded">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <p class="font-semibold text-[var(--color-text-primary)]">Order #{{ order.name }}</p>
+                  <p class="text-sm text-[var(--color-text-secondary)]">{{ order.created_at | date: '%B %d, %Y' }}</p>
+                </div>
+                <span class="text-sm px-3 py-1 rounded {% case order.fulfillment_status %}{% when 'fulfilled' %}bg-green-100 text-green-800{% when 'unfulfilled' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-800{% endcase %}">
+                  {{ order.fulfillment_status }}
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <p class="text-lg font-bold text-[var(--color-text-primary)]">{{ order.total_price | money }}</p>
+                <a href="{{ order.url }}" class="text-[var(--color-primary)] hover:opacity-70">View Details →</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-[var(--color-text-secondary)]">You haven't placed any orders yet.</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="bg-[var(--color-surface)] p-6 rounded">
+        <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">Account Details</h2>
+        <p class="text-[var(--color-text-primary)] font-medium">{{ customer.name }}</p>
+        <p class="text-[var(--color-text-secondary)] text-sm mb-4">{{ customer.email }}</p>
+        
+        <div class="space-y-2">
+          <a href="{{ routes.account_addresses_url }}" class="block text-[var(--color-primary)] hover:opacity-70">Manage Addresses</a>
+          <a href="{{ routes.account_logout_url }}" class="block text-[var(--color-primary)] hover:opacity-70">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Account",
+  "tag": "section",
+  "class": "section-account",
+  "settings": []
+}
+{% endschema %}

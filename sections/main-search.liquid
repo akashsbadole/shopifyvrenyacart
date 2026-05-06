@@ -1,0 +1,61 @@
+{% comment %}Search Results Page Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <div class="text-center mb-12">
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-4">
+      {% if search.performed %}
+        {% if search.results_count == 0 %}
+          No results for "{{ search.terms }}"
+        {% else %}
+          Search Results
+        {% endif %}
+      {% else %}
+        Search
+      {% endif %}
+    </h1>
+  </div>
+
+  <form action="{{ routes.search_url }}" method="get" class="max-w-xl mx-auto mb-12">
+    <div class="flex gap-2">
+      <input 
+        type="text" 
+        name="q" 
+        value="{{ search.terms }}" 
+        placeholder="Search for products..." 
+        class="flex-1 h-12 px-4 border border-[var(--color-border)] rounded bg-[var(--color-surface)] focus:outline-none focus:border-[var(--color-primary)]"
+      >
+      <button type="submit" class="h-12 px-6 bg-[var(--color-primary)] text-white font-semibold rounded hover:opacity-90 transition-opacity">
+        Search
+      </button>
+    </div>
+  </form>
+
+  {% if search.performed %}
+    {% if search.results_count > 0 %}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+            <a class="group block" href="{{ item.url }}">
+              <div class="aspect-[3/4] bg-[var(--color-surface)] overflow-hidden mb-4">
+                {% if item.featured_media %}
+                  {{ item.featured_media | image_url: width: 400 | image_tag: class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500', loading: 'lazy' }}
+                {% endif %}
+              </div>
+              <h3 class="text-base text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-primary)] transition-colors">{{ item.title }}</h3>
+              <p class="text-lg font-bold text-[var(--color-text-primary)]">{{ item.price | money }}</p>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Search Results",
+  "tag": "section",
+  "class": "section-search",
+  "settings": []
+}
+{% endschema %}

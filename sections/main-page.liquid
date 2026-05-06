@@ -1,0 +1,19 @@
+{% comment %}Page Content Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-8">{{ page.title }}</h1>
+    <div class="prose prose-lg text-[var(--color-text-secondary)]">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page Content",
+  "tag": "section",
+  "class": "section-page",
+  "settings": []
+}
+{% endschema %}

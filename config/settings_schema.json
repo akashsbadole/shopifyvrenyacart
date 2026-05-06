@@ -5,14 +5,10 @@
     "theme_version": "1.0.0",
     "theme_support_email": "support@appixen.com",
     "theme_documentation_url": "https://appixen.com/shopify/docs",
-    "theme_author": "vrenyaCart Theme",
-    "theme_documentation": "https://appixen.com/shopify/docs",
-    "theme_preview_image": "",
-    "sections": []
+    "theme_author": "vrenyaCart Theme"
   },
   {
     "name": "Colors",
-    "priority": 10,
     "settings": [
       { "type": "header", "content": "Primary Colors" },
       { "type": "color", "id": "color_primary", "default": "#0052FF", "label": "Primary" },
@@ -35,7 +31,6 @@
   },
   {
     "name": "Typography",
-    "priority": 20,
     "settings": [
       { "type": "font_picker", "id": "font_heading", "default": "plus_jakarta_sans_n7", "label": "Heading Font" },
       { "type": "font_picker", "id": "font_body", "default": "plus_jakarta_sans_n4", "label": "Body Font" }
@@ -43,7 +38,6 @@
   },
   {
     "name": "Social Media",
-    "priority": 30,
     "settings": [
       { "type": "text", "id": "social_facebook_link", "label": "Facebook" },
       { "type": "text", "id": "social_instagram_link", "label": "Instagram" },
@@ -54,14 +48,12 @@
   },
   {
     "name": "Footer",
-    "priority": 40,
     "settings": [
       { "type": "text", "id": "footer_copyright", "default": "© 2024 vrenyaCart. All rights reserved.", "label": "Copyright" }
     ]
   },
   {
     "name": "Advanced",
-    "priority": 50,
     "settings": [
       { "type": "text", "id": "google_maps_api_key", "label": "Google Maps API Key" }
     ]

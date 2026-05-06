@@ -1,48 +1,78 @@
-{% comment %}
-  Press Coverage - vrenyaCart Theme
-  Logo slider of press mentions
-{% endcomment %}
+{% comment %}Testimonials Section - LUXE Theme{% endcomment %}
 
-<section class="press py-12">
-  <div class="press__container mx-auto px-6" style="max-width: var(--container-width);">
-    {%- if section.settings.heading != blank -%}
-      <p class="text-sm font-semibold text-center uppercase tracking-wider mb-8" style="color: var(--color-text-secondary);">{{ section.settings.heading }}</p>
-    {%- endif -%}
-
-    <div class="press__logos flex items-center justify-center gap-8 flex-wrap">
-      {%- for i in (1..section.settings.logo_count) -%}
-        {%- assign image_key = 'logo_' | append: i -%}
-        {%- assign link_key = 'link_' | append: i -%}
-        
-        {%- if section.settings[image_key] != blank -%}
-          <a href="{{ section.settings[link_key] | default: '#' }}" class="press__logo grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
-            {{ section.settings[image_key] | image_url: width: 150 | image_tag: class: 'h-12 object-contain' }}
-          </a>
-        {%- else -%}
-          <div class="h-12 flex items-center justify-center" style="width: 150px; color: var(--color-text-secondary);">
-            <span class="font-bold">LOGO {{ i }}</span>
+<section class="py-[120px] px-6 md:px-12 bg-zinc-50">
+  <div class="max-w-[1440px] mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 mb-4">What Our Customers Say</h2>
+      <p class="text-zinc-600 max-w-2xl mx-auto">Join thousands of satisfied customers who love our products.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-lg border border-zinc-100">
+        <div class="flex gap-1 mb-4">
+          {% for i in (1..5) %}
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          {% endfor %}
+        </div>
+        <p class="text-zinc-600 mb-6">"Absolutely love the quality! Fast shipping and beautiful packaging. Will definitely be ordering again."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center">
+            <span class="text-zinc-600 font-bold">JD</span>
           </div>
-        {%- endif -%}
-      {%- endfor -%}
+          <div>
+            <p class="font-semibold text-zinc-900">John Doe</p>
+            <p class="text-sm text-zinc-500">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-lg border border-zinc-100">
+        <div class="flex gap-1 mb-4">
+          {% for i in (1..5) %}
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          {% endfor %}
+        </div>
+        <p class="text-zinc-600 mb-6">"The design is exactly as shown. Great customer service and the products exceeded my expectations!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center">
+            <span class="text-zinc-600 font-bold">SM</span>
+          </div>
+          <div>
+            <p class="font-semibold text-zinc-900">Sarah M.</p>
+            <p class="text-sm text-zinc-500">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-lg border border-zinc-100">
+        <div class="flex gap-1 mb-4">
+          {% for i in (1..5) %}
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          {% endfor %}
+        </div>
+        <p class="text-zinc-600 mb-6">"Best online shopping experience! Easy to navigate, quick checkout, and products arrived perfectly."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center">
+            <span class="text-zinc-600 font-bold">AK</span>
+          </div>
+          <div>
+            <p class="font-semibold text-zinc-900">Alex K.</p>
+            <p class="text-sm text-zinc-500">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Press Coverage",
-  "class": "section-press",
+  "name": "Testimonials",
+  "class": "section-testimonials",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "As Seen In" },
-    { "type": "range", "id": "logo_count", "label": "Number of Logos", "min": 3, "max": 8, "default": 5, "step": 1 },
-    { "type": "image_picker", "id": "logo_1", "label": "Logo 1" },
-    { "type": "url", "id": "link_1", "label": "Logo 1 Link" },
-    { "type": "image_picker", "id": "logo_2", "label": "Logo 2" },
-    { "type": "image_picker", "id": "logo_3", "label": "Logo 3" },
-    { "type": "image_picker", "id": "logo_4", "label": "Logo 4" },
-    { "type": "image_picker", "id": "logo_5", "label": "Logo 5" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What Our Customers Say" }
   ],
-  "presets": [{ "name": "Press Coverage" }]
+  "presets": [{ "name": "Testimonials" }]
 }
 {% endschema %}

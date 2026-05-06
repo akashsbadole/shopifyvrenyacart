@@ -1,0 +1,215 @@
+{% comment %}Product Page Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+    <div class="product-gallery relative">
+      <div class="aspect-[3/4] bg-white overflow-hidden mb-4 border border-zinc-200 relative group" id="main-image-container">
+        {% if product.featured_media %}
+          <img src="{{ product.featured_media | image_url: width: 1000 }}" 
+               alt="{{ product.title | escape }}" 
+               class="w-full h-full object-contain cursor-zoom-in"
+               id="main-image"
+               data-zoom-src="{{ product.featured_media | image_url: width: 2000 }}">
+        {% else %}
+          <div class="w-full h-full flex items-center justify-center">
+            <span class="text-4xl text-zinc-300">No Image</span>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if product.images.size > 1 %}
+        <div class="grid grid-cols-4 gap-4">
+          {% for image in product.images %}
+            <button type="button" 
+                    class="aspect-square bg-white overflow-hidden border border-zinc-200 hover:border-[#0052FF] transition-colors {% if forloop.first %}border-[#0052FF]{% endif %}"
+                    onclick="switchImage('{{ image | image_url: width: 1000 }}', '{{ image | image_url: width: 2000 }}', this)">
+              <img src="{{ image | image_url: width: 150 }}" 
+                   alt="{{ product.title | escape }}" 
+                   class="w-full h-full object-contain">
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="product-info">
+      {% if product.vendor %}
+        <p class="text-sm text-zinc-500 uppercase tracking-widest mb-2">{{ product.vendor }}</p>
+      {% endif %}
+      
+      <h1 class="text-3xl md:text-4xl font-bold text-zinc-900 mb-2">{{ product.title }}</h1>
+      
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-2xl font-bold text-zinc-900" id="product-price">
+          {{ product.price | money }}
+        </span>
+        {% if product.compare_at_price > product.price %}
+          <span class="text-lg text-zinc-400 line-through">{{ product.compare_at_price | money }}</span>
+          <span class="text-xs font-bold text-white bg-red-600 px-2 py-1 rounded">SALE</span>
+        {% endif %}
+      </div>
+
+      {% render 'review-stars', product: product %}
+      <div class="h-4"></div>
+
+      {% if product.description != blank %}
+        <div class="text-zinc-600 mb-8">
+          {{ product.description }}
+        </div>
+      {% endif %}
+
+      <form action="/cart/add" method="post" enctype="multipart/form-data" id="product-form">
+        {% if product.options.size > 0 %}
+          {% for option in product.options_with_values %}
+            <div class="mb-6">
+              <label class="block text-sm font-bold text-zinc-900 mb-3">
+                {{ option.name }}
+              </label>
+              
+              {% if option.values.size > 1 %}
+                <div class="flex flex-wrap gap-2" id="option-{{ forloop.index }}">
+                  {% for value in option.values %}
+                    <label class="cursor-pointer">
+                      {% if option.name == 'Color' or option.name == 'Colour' %}
+                        <input type="radio" name="options[{{ option.name }}]" value="{{ value }}" 
+                               class="sr-only peer" 
+                               {% if option.selected_value == value %}checked{% endif %}
+                               onchange="updateVariant()">
+                        <span class="w-10 h-10 rounded-full border-2 inline-block transition-all peer-checked:border-[#0052FF] peer-checked:ring-2 peer-checked:ring-[#0052FF] peer-checked:ring-offset-2"
+                              style="background-color: {{ value | split: ' ' | last | downcase }};"
+                              title="{{ value }}"></span>
+                      {% else %}
+                        <input type="radio" name="options[{{ option.name }}]" value="{{ value }}" 
+                               class="sr-only peer"
+                               {% if option.selected_value == value %}checked{% endif %}
+                               onchange="updateVariant()">
+                        <span class="px-4 py-2 border text-sm font-medium inline-block transition-all peer-checked:border-[#0052FF] peer-checked:bg-[#0052FF] peer-checked:text-white hover:border-zinc-400">
+                          {{ value }}
+                        </span>
+                      {% endif %}
+                    </label>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" id="variant-id">
+
+        <div class="flex gap-4 mb-6">
+          <div class="flex items-center border border-zinc-200 rounded">
+            <button type="button" class="w-12 h-12 text-zinc-600 hover:bg-zinc-100" onclick="adjustQuantity(-1)">−</button>
+            <input type="number" name="quantity" value="1" min="1" class="w-16 text-center border-none focus:ring-0" id="quantity">
+            <button type="button" class="w-12 h-12 text-zinc-600 hover:bg-zinc-100" onclick="adjustQuantity(1)">+</button>
+          </div>
+
+          <button type="submit" name="add" 
+                  class="flex-1 h-12 bg-[#0052FF] text-white font-bold rounded hover:bg-[#0038b6] transition-colors"
+                  {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+            {% if product.selected_or_first_available_variant.available %}
+              Add to Cart - {{ product.price | money }}
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        </div>
+      </form>
+
+      <div class="border-t border-zinc-200 pt-6 space-y-3">
+        <div class="flex items-center gap-3 text-sm text-zinc-600">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span>In stock and ready to ship</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm text-zinc-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+          <span>Free shipping & easy returns</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const productVariants = {{ product.variants | json }};
+const productImages = {{ product.images | map: 'src' | json }};
+
+function switchImage(src, zoomSrc, btn) {
+  document.getElementById('main-image').src = src;
+  document.getElementById('main-image').dataset.zoomSrc = zoomSrc;
+  document.querySelectorAll('#main-image-container ~ div button').forEach(b => b.classList.remove('border-[#0052FF]', 'border-2'));
+  btn.classList.add('border-[#0052FF]', 'border-2');
+}
+
+function updateVariant() {
+  const form = document.getElementById('product-form');
+  const formData = new FormData(form);
+  const selectedOptions = [];
+  {% for option in product.options_with_values %}
+    selectedOptions.push(formData.get('options[{{ option.name }}]') || '{{ option.selected_value }}');
+  {% endfor %}
+  
+  const variant = productVariants.find(v => {
+    return v.options.every((opt, i) => opt === selectedOptions[i]);
+  });
+  
+  if (variant) {
+    document.getElementById('variant-id').value = variant.id;
+    
+    const priceEl = document.getElementById('product-price');
+    if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+      priceEl.innerHTML = '<span class="text-red-600">' + formatMoney(variant.price) + '</span> <span class="text-zinc-400 line-through text-lg">' + formatMoney(variant.compare_at_price) + '</span>';
+    } else {
+      priceEl.textContent = formatMoney(variant.price);
+    }
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (variant.available) {
+      submitBtn.textContent = 'Add to Cart - ' + formatMoney(variant.price);
+      submitBtn.disabled = false;
+    } else {
+      submitBtn.textContent = 'Sold Out';
+      submitBtn.disabled = true;
+    }
+    
+    if (variant.featured_image) {
+      switchImage(variant.featured_image.src, variant.featured_image.src.replace('1000', '2000'), document.querySelector('#main-image-container ~ div button'));
+    }
+  }
+}
+
+function adjustQuantity(delta) {
+  const input = document.getElementById('quantity');
+  input.value = Math.max(1, parseInt(input.value) + delta);
+}
+
+function formatMoney(cents) {
+  return (cents / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+document.getElementById('main-image').addEventListener('click', function() {
+  const zoomSrc = this.dataset.zoomSrc || this.src;
+  window.open(zoomSrc, '_blank');
+});
+
+document.getElementById('main-image').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width * 100;
+  const y = (e.clientY - rect.top) / rect.height * 100;
+  this.style.transformOrigin = x + '% ' + y + '%';
+  this.style.transform = 'scale(2)';
+});
+
+document.getElementById('main-image').addEventListener('mouseleave', function() {
+  this.style.transform = 'scale(1)';
+});
+</script>
+
+{% schema %}
+{
+  "name": "Product Page",
+  "tag": "section",
+  "class": "section-product",
+  "settings": []
+}
+{% endschema %}

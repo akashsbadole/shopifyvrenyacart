@@ -1,0 +1,85 @@
+{% comment %}Customer Order Section - LUXE Theme{% endcomment %}
+
+<section class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+  <a href="{{ routes.account_url }}" class="text-[var(--color-primary)] hover:opacity-70 mb-6 inline-block">← Back to Account</a>
+
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-[var(--color-text-primary)]">Order #{{ order.name }}</h1>
+    <p class="text-[var(--color-text-secondary)]">{{ order.created_at | date: '%B %d, %Y' }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div class="lg:col-span-2">
+      <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">Items</h2>
+      <div class="space-y-4">
+        {% for line_item in order.line_items %}
+          <div class="flex gap-4 pb-4 border-b border-[var(--color-border-subtle)]">
+            <div class="w-20 h-24 bg-[var(--color-surface)]">
+              {% if line_item.image %}
+                {{ line_item.image | image_url: width: 100 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+              {% endif %}
+            </div>
+            <div class="flex-1">
+              <a href="{{ line_item.url }}" class="font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-primary)]">{{ line_item.product.title }}</a>
+              {% unless line_item.product.has_only_default_variant %}
+                <p class="text-sm text-[var(--color-text-secondary)]">{{ line_item.variant.title }}</p>
+              {% endunless %}
+              <p class="text-sm text-[var(--color-text-secondary)]">Qty: {{ line_item.quantity }}</p>
+            </div>
+            <div class="text-[var(--color-text-primary)] font-semibold">{{ line_item.line_price | money }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div>
+      <div class="bg-[var(--color-surface)] p-6 rounded mb-6">
+        <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">Order Summary</h2>
+        <div class="space-y-2 text-[var(--color-text-secondary)]">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>{{ order.subtotal_price | money }}</span>
+          </div>
+          {% for discount in order.discounts %}
+            <div class="flex justify-between">
+              <span>{{ discount.code }}</span>
+              <span>-{{ discount.amount | money }}</span>
+            </div>
+          {% endfor %}
+          {% for shipping_method in order.shipping_methods %}
+            <div class="flex justify-between">
+              <span>Shipping</span>
+              <span>{{ shipping_method.price | money }}</span>
+            </div>
+          {% endfor %}
+          {% for tax_line in order.tax_lines %}
+            <div class="flex justify-between">
+              <span>Tax ({{ tax_line.title }})</span>
+              <span>{{ tax_line.price | money }}</span>
+            </div>
+          {% endfor %}
+          <div class="flex justify-between pt-2 border-t border-[var(--color-border-subtle)] text-[var(--color-text-primary)] font-bold">
+            <span>Total</span>
+            <span>{{ order.total_price | money }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[var(--color-surface)] p-6 rounded">
+        <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">Shipping Address</h2>
+        <div class="text-[var(--color-text-secondary)]">
+          {{ order.shipping_address | format_address }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Order",
+  "tag": "section",
+  "class": "section-order",
+  "settings": []
+}
+{% endschema %}

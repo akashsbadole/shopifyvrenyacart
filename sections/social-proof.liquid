@@ -1,41 +1,34 @@
-{% comment %}Social Proof - vrenyaCart Theme{% endcomment %}
+{% comment %}Social Proof Section - LUXE Theme{% endcomment %}
 
-<div class="social-proof" id="social-proof">
-  <div class="flex items-center gap-4">
-    <div class="flex -space-x-2">
-      {% for i in (1..5) %}
-        {% assign avatar_setting = 'avatar_' | append: i %}
-        {% if section.settings[avatar_setting] != blank %}
-        <div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-300">
-          <img src="{{ section.settings[avatar_setting] | image_url: width: 40 }}" alt="" width="40" height="40" class="w-full h-full object-cover">
-        </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-    
-    <div>
-      <p class="text-sm">
-        <span class="font-semibold">{{ section.settings.count | default: '127' }}</span> {{ section.settings.text | default: 'people are viewing this page' }}
-      </p>
-      <p class="text-xs" style="color: var(--color-text-secondary);">{{ section.settings.subtext | default: 'in the last 24 hours' }}</p>
+<section class="py-16 px-6 md:px-12 bg-white border-y border-zinc-100">
+  <div class="max-w-[1440px] mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-4xl font-bold text-zinc-900 mb-2">10K+</div>
+        <div class="text-sm text-zinc-500 uppercase tracking-widest">Happy Customers</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-zinc-900 mb-2">500+</div>
+        <div class="text-sm text-zinc-500 uppercase tracking-widest">Products</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-zinc-900 mb-2">4.9</div>
+        <div class="text-sm text-zinc-500 uppercase tracking-widest">Average Rating</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold text-zinc-900 mb-2">50+</div>
+        <div class="text-sm text-zinc-500 uppercase tracking-widest">Awards Won</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 {% schema %}
 {
   "name": "Social Proof",
   "class": "section-social-proof",
-  "settings": [
-    { "type": "text", "id": "count", "default": "127", "label": "Viewer Count" },
-    { "type": "text", "id": "text", "default": "people are viewing this page", "label": "Main Text" },
-    { "type": "text", "id": "subtext", "default": "in the last 24 hours", "label": "Sub Text" },
-    { "type": "image_picker", "id": "avatar_1", "label": "Avatar 1" },
-    { "type": "image_picker", "id": "avatar_2", "label": "Avatar 2" },
-    { "type": "image_picker", "id": "avatar_3", "label": "Avatar 3" },
-    { "type": "image_picker", "id": "avatar_4", "label": "Avatar 4" },
-    { "type": "image_picker", "id": "avatar_5", "label": "Avatar 5" }
-  ],
+  "tag": "section",
+  "settings": [],
   "presets": [{ "name": "Social Proof" }]
 }
 {% endschema %}

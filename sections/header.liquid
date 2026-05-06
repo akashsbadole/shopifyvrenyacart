@@ -1,187 +1,81 @@
-{% comment %}
-  Header Section - LUXE Theme
-  Settings: https://shopify.dev/docs/themes/sections/theme-section-settings
-{% endcomment %}
+{% comment %}Header Section - LUXE Theme{% endcomment %}
 
 {%- style -%}
+.header {
+  --header-height: 80px;
+}
+.header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: white;
+}
+@media (max-width: 768px) {
   .header {
-    --header-height: 80px;
+    --header-height: 64px;
   }
-
-  .header-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .header-transparent .header {
-    background-color: transparent;
-  }
-
-  {% if section.settings.header_sticky %}
-    .header-sticky .header {
-      background-color: rgb(255 255 255 / var(--header-bg-opacity, 0.95));
-      backdrop-filter: blur(8px);
-    }
-  {% endif %}
-
-  @media (max-width: 768px) {
-    .header {
-      --header-height: 64px;
-    }
-  }
+}
 {%- endstyle -%}
 
-{%- if section.settings.header_transparent -%}
-{%- assign header_bg_opacity = 0 -%}
-{%- else -%}
-{%- assign header_bg_opacity = 0.95 -%}
-{%- endif -%}
-
-<div class="header-wrapper{% if section.settings.header_transparent %} header-transparent{% endif %}{% if section.settings.header_sticky %} header-sticky{% endif %}" style="--header-bg-opacity: {{ header_bg_opacity }}">
-  <header class="header bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)]">
-    <div class="header__container mx-auto px-6" style="max-width: var(--container-width);">
-      <div class="header__inner flex items-center justify-between h-[var(--header-height)]" style="gap: 2rem;">
-
-        {%- case section.settings.header_style -%}
-          {%- when 'minimal' -%}
-            {% render 'header-minimal' %}
-          {%- when 'classic' -%}
-            {% render 'header-classic' %}
-          {%- when 'centered' -%}
-            {% render 'header-centered' %}
-        {%- endcase -%}
-
+<div class="header-wrapper bg-white border-b border-zinc-100 flat no shadows">
+  <header class="header flex justify-between items-center w-full px-6 md:px-12 h-20 max-w-[1440px] mx-auto">
+    <div class="flex items-center gap-8">
+      <a href="{{ routes.root_url }}" class="text-xl font-black tracking-tighter text-zinc-900">
+        {% if settings.logo != blank %}
+          <img src="{{ settings.logo | image_url: width: 100 }}" alt="{{ shop.name | escape }}" width="100">
+        {% else %}
+          LUXE
+        {% endif %}
+      </a>
+      <div class="hidden md:flex gap-6 text-sm font-medium tracking-tight">
+        {% for link in linklists.main-menu.links %}
+          <a href="{{ link.url }}" class="text-zinc-500 hover:text-zinc-900 transition-colors hover:opacity-70">
+            {{ link.title }}
+          </a>
+        {% endfor %}
       </div>
+    </div>
+    <div class="flex items-center gap-4 text-blue-600">
+      <div class="hidden md:flex items-center border border-zinc-200 rounded px-3 py-1">
+        <svg class="w-4 h-4 text-zinc-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <form action="{{ routes.search_url }}" method="get" class="flex items-center">
+          <input type="text" name="q" placeholder="Search..." class="bg-transparent border-none focus:ring-0 text-sm w-32 placeholder-zinc-400 p-0 text-zinc-900">
+        </form>
+      </div>
+      <a href="{{ routes.cart_url }}" data-open-cart class="hover:opacity-70 transition-opacity relative">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        {% if cart.item_count > 0 %}
+          <span class="absolute -top-2 -right-2 bg-[#0052FF] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+            {{ cart.item_count }}
+          </span>
+        {% endif %}
+      </a>
+      {% if customer %}
+        <a href="{{ routes.account_url }}" class="hover:opacity-70 transition-opacity">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+        </a>
+      {% else %}
+        <a href="{{ routes.account_login_url }}" class="hover:opacity-70 transition-opacity">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+        </a>
+      {% endif %}
     </div>
   </header>
 </div>
-
-{%- unless section.settings.header_style == 'minimal' -%}
-  {% render 'header-mega-menu' %}
-{%- endunless -%}
-
-{%- render 'header-search' -%}
-
-<script>
-  window.addEventListener('scroll', () => {
-    const header = document.querySelector('.header-wrapper');
-    if (header && window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else if (header) {
-      header.classList.remove('scrolled');
-    }
-  });
-</script>
 
 {% schema %}
 {
   "name": "Header",
   "class": "section-header",
   "tag": "header",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "select",
-      "id": "header_style",
-      "label": "Style",
-      "default": "classic",
-      "options": [
-        {"value": "minimal", "label": "Minimal (Logo + Icons)"},
-        {"value": "classic", "label": "Classic"},
-        {"value": "centered", "label": "Centered"}
-      ]
-    },
-    {
-      "type": "checkbox",
-      "id": "header_sticky",
-      "label": "Sticky on scroll",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "header_transparent",
-      "label": "Transparent on hero",
-      "default": false,
-      "info": "Requires hero section at top of page"
-    },
-    {
-      "type": "header",
-      "content": "Features"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_search",
-      "label": "Enable search",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_wishlist",
-      "label": "Enable wishlist",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_account",
-      "label": "Enable account link",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_language_selector",
-      "label": "Enable language selector",
-      "default": true,
-      "info": "Shows language dropdown in header"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_currency_selector",
-      "label": "Enable currency selector",
-      "default": true,
-      "info": "Shows currency dropdown in header"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "mega_menu",
-      "name": "Mega Menu",
-      "settings": [
-        {
-          "type": "text",
-          "id": "menu_title",
-          "label": "Menu item",
-          "info": "Enter the menu item to create a mega menu for"
-        },
-        {
-          "type": "range",
-          "id": "columns",
-          "label": "Columns",
-          "min": 2,
-          "max": 6,
-          "default": 4,
-          "step": 1
-        },
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Feature image"
-        },
-        {
-          "type": "text",
-          "id": "image_title",
-          "label": "Image title"
-        },
-        {
-          "type": "text",
-          "id": "image_link",
-          "label": "Image link"
-        }
-      ]
-    }
-  ]
+  "settings": []
 }
 {% endschema %}
