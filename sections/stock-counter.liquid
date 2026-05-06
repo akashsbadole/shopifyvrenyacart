@@ -1,49 +1,59 @@
-{% comment %}Stock Counter - vrenyaCart Theme{% endcomment %}
+{% comment %}Stock Counter Section - LUXE Theme{% endcomment %}
 
-{% assign stock_count = product.selected_or_first_available_variant.inventory_quantity | default: 10 %}
-{% assign low_stock_threshold = 10 %}
-
-<div class="stock-counter" data-stock="{{ stock_count }}">
-  {% if stock_count > 0 %}
-    {% if stock_count <= low_stock_threshold %}
-      <p class="text-sm font-medium" style="color: var(--color-warning);">
-        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l.07.286c.224.795.672 1.455 1.264 1.847l.202.133c.382.252.623.68.623 1.152v.482c0 .472-.241.9-.627 1.152l-.202.133c-.592.392-1.04 1.052-1.264 1.847l-.07.286c-.765 1.36-2.722 1.36-3.486 0l-.07-.286c-.224-.795-.672-1.455-1.264-1.847l-.202-.133c-.382-.252-.623-.68-.623-1.152v-.482c0-.472.241-.9.627-1.152l.202-.133c.592-.392 1.04-1.052 1.264-1.847l.07-.286zM9.75 7.5a.75.75 0 01.75.75v2.5a.75.75 0 01-1.5 0v-2.5a.75.75 0 01.75-.75zm3.75 1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/>
-        </svg>
-        Only {{ stock_count }} left in stock
-      </p>
-    {% else %}
-      <p class="text-sm" style="color: var(--color-success);">
-        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
-        In Stock
-      </p>
-    {% endif %}
-  {% else %}
-    <p class="text-sm font-medium" style="color: var(--color-error);">
-      <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-      </svg>
-      Out of Stock
-    </p>
+<div class="stock-counter" data-stock="{{ section.settings.stock }}" data-low-stock="{{ section.settings.low_stock }}">
+  {% if section.settings.show_progress %}
+    <div class="mb-3">
+      <div class="h-2 bg-zinc-200 rounded-full overflow-hidden">
+        <div class="h-full bg-green-500 transition-all duration-500" id="stock-bar" style="width: 100%"></div>
+      </div>
+    </div>
   {% endif %}
+  
+  <p class="text-sm">
+    {% if section.settings.stock > 0 %}
+      <span class="text-green-600 font-medium">✓ In Stock</span>
+      {% if section.settings.show_count %}
+        <span class="text-zinc-500"> - Only <span class="font-bold text-zinc-900">{{ section.settings.stock }}</span> left!</span>
+      {% endif %}
+    {% else %}
+      <span class="text-red-600 font-medium">✕ Out of Stock</span>
+    {% endif %}
+  </p>
 </div>
+
+{% if section.settings.show_progress %}
+<script>
+(function() {
+  const counter = document.querySelector('.stock-counter');
+  if (!counter) return;
+  
+  const stock = parseInt(counter.dataset.stock);
+  const lowStock = parseInt(counter.dataset.lowStock);
+  const bar = document.getElementById('stock-bar');
+  
+  const percentage = Math.min((stock / 50) * 100, 100);
+  bar.style.width = percentage + '%';
+  
+  if (stock <= lowStock) {
+    bar.classList.remove('bg-green-500');
+    bar.classList.add('bg-red-500');
+  } else if (stock <= lowStock * 2) {
+    bar.classList.remove('bg-green-500');
+    bar.classList.add('bg-yellow-500');
+  }
+})();
+</script>
+{% endif %}
 
 {% schema %}
 {
   "name": "Stock Counter",
   "class": "section-stock-counter",
   "settings": [
-    {
-      "type": "range",
-      "id": "low_stock_threshold",
-      "min": 1,
-      "max": 50,
-      "step": 1,
-      "default": 10,
-      "label": "Low Stock Alert Threshold"
-    }
+    { "type": "range", "id": "stock", "label": "Stock Quantity", "min": 0, "max": 100, "default": 10 },
+    { "type": "range", "id": "low_stock", "label": "Low Stock Threshold", "min": 1, "max": 20, "default": 5 },
+    { "type": "checkbox", "id": "show_count", "label": "Show Remaining Count", "default": true },
+    { "type": "checkbox", "id": "show_progress", "label": "Show Progress Bar", "default": true }
   ],
   "presets": [{ "name": "Stock Counter" }]
 }

@@ -4,22 +4,41 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <meta name="theme-color" content="#0052FF">
   <link rel="canonical" href="{{ canonical_url }}">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+  
+  {% comment %}Preconnect to external resources{% endcomment %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  
+  {% comment %}SEO Meta Tags{% endcomment %}
   {% if template == 'product' %}
-  <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow">
   {% elsif template == 'article' %}
-  <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow">
   {% else %}
-  <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow">
   {% endif %}
 
   {% if page_description %}
     <meta name="description" content="{{ page_description | escape }}">
   {% endif %}
+
+  {% comment %}Open Graph{% endcomment %}
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:description" content="{{ page_description | escape | default: shop.description }}">
+  {% if template == 'product' and product.featured_media %}
+    <meta property="og:image" content="https:{{ product.featured_media | image_url: width: 1200 }}">
+  {% endif %}
+
+  {% comment %}Twitter Card{% endcomment %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
+  <meta name="twitter:description" content="{{ page_description | escape | default: shop.description }}">
 
   {% render 'favicon' %}
 
@@ -109,34 +128,55 @@
       --font-heading: {{ settings.font_heading }};
       --font-body: {{ settings.font_body }};
 
-      --container-width: {{ settings.container_width }}px;
-      --section-spacing: {{ settings.section_spacing }}px;
-      --grid-gutter: {{ settings.grid_gutter }}px;
-      --border-radius: {{ settings.border_radius }}px;
+      --container-width: 1440px;
+      --section-spacing: 80px;
+      --grid-gutter: 32px;
+      --border-radius: 4px;
     }
   {% endstyle %}
 </head>
 
-<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] font-[var(--font-body)] antialiased{% if template == 'customers/account' or template == 'customers/order' %} account-page{% endif %}">
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-[var(--color-surface)] px-4 py-2 rounded">
+<body class="bg-[#fbf9f9] text-[#18181b] font-['Plus_Jakarta_Sans'] antialiased{% if template == 'customers/account' or template == 'customers/order' %} account-page{% endif %}">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-white px-4 py-2 rounded">
     Skip to content
   </a>
 
   {% section 'header' %}
 
-  <main id="main-content" role="main" tabindex="-1">
+  <main id="main-content" role="main" tabindex="-1" aria-label="Main content">
     {{ content_for_layout }}
   </main>
 
   {% section 'footer' %}
-
   {% section 'cart-drawer' %}
+  
+  {% comment %}Back to top button{% endcomment %}
+  <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+          id="back-to-top"
+          class="fixed bottom-8 right-8 w-12 h-12 bg-[#0052FF] text-white rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-[#0038b6] z-40"
+          aria-label="Back to top">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+  </button>
 
-  {%- comment -%} Async JS for performance {%- endcomment -%}
-  <script src="{{ 'theme.js' | asset_url }}" async></script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const backToTop = document.getElementById('back-to-top');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          backToTop.classList.remove('opacity-0', 'invisible');
+          backToTop.classList.add('opacity-100', 'visible');
+        } else {
+          backToTop.classList.add('opacity-0', 'invisible');
+          backToTop.classList.remove('opacity-100', 'visible');
+        }
+      });
+    });
+  </script>
 
   <noscript>
-    <div class="fixed bottom-0 left-0 right-0 bg-[var(--color-primary)] text-[var(--color-text-inverse)] px-4 py-3 text-center">
+    <div class="fixed bottom-0 left-0 right-0 bg-[#0052FF] text-white px-4 py-3 text-center">
       Please enable JavaScript for the best experience.
     </div>
   </noscript>

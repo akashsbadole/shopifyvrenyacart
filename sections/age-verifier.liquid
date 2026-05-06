@@ -1,62 +1,60 @@
-{% comment %}
-  Age Verifier Section - vrenyaCart Theme
-  Age verification gate for restricted products
-{% endcomment %}
+{% comment %}Age Verifier Section - LUXE Theme{% endcomment %}
 
-<div class="age-verifier fixed inset-0 z-50 hidden" id="ageVerifier" data-ageVerifier>
-  <div class="age-verifier__overlay fixed inset-0 bg-black/80"></div>
-  <div class="age-verifier__content fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded p-8 text-center">
-    <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-    </svg>
-    
-    <h2 class="text-2xl font-bold mb-4">{{ section.settings.heading | default: 'Age Verification' }}</h2>
-    <p class="mb-6" style="color: var(--color-text-secondary);">{{ section.settings.message }}</p>
-    
-    <div class="flex gap-4">
-      <button type="button" class="flex-1 py-3 font-semibold rounded" style="border: 1px solid var(--color-border);" onclick="ageVerified(false)">
-        {{ section.settings.noButton | default: 'No' }}
-      </button>
-      <button type="button" class="flex-1 py-3 font-semibold rounded" style="background: var(--color-primary); color: var(--color-text-inverse);" onclick="ageVerified(true)">
-        {{ section.settings.yesButton | default: 'Yes' }}
-      </button>
+<div id="age-verifier" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="age-title">
+  <div class="fixed inset-0 bg-black/80 flex items-center justify-center p-6">
+    <div class="bg-white rounded-lg max-w-md w-full p-8 text-center">
+      <div class="w-16 h-16 mx-auto mb-6 bg-[#0052FF] rounded-full flex items-center justify-center">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      
+      <h2 id="age-title" class="text-2xl font-bold text-zinc-900 mb-4">{{ section.settings.title | default: 'Age Verification' }}</h2>
+      <p class="text-zinc-600 mb-8">{{ section.settings.message | default: 'You must be 18 years or older to enter this site.' }}</p>
+      
+      <div class="flex gap-4">
+        <button onclick="verifyAge(true)" class="flex-1 py-3 bg-[#0052FF] text-white font-bold rounded hover:bg-[#0038b6] transition-colors">
+          Yes, I'm 18+
+        </button>
+        <button onclick="verifyAge(false)" class="flex-1 py-3 border border-zinc-200 text-zinc-700 font-bold rounded hover:bg-zinc-50 transition-colors">
+          No
+        </button>
+      </div>
+      
+      {% if section.settings.show_link %}
+        <a href="#" class="block mt-4 text-sm text-zinc-500 hover:text-[#0052FF]">{{ section.settings.link_text | default: 'Learn more' }}</a>
+      {% endif %}
     </div>
-    
-    {%- if section.settings.age_limit > 0 -%}
-    <p class="mt-4 text-xs" style="color: var(--color-text-secondary);">{{ section.settings.age_limit }}+ only</p>
-    {%- endif -%}
   </div>
 </div>
 
 <script>
-  function ageVerified(verified) {
-    if (verified) {
-      localStorage.setItem('age_verified', 'true');
-      document.getElementById('ageVerifier').classList.add('hidden');
-    } else {
-      window.location.href = '/';
-    }
+function verifyAge(isAllowed) {
+  if (isAllowed) {
+    localStorage.setItem('ageVerified', 'true');
+    document.getElementById('age-verifier').classList.add('hidden');
+    document.body.style.overflow = '';
+  } else {
+    window.location.href = '{{ routes.root_url }}';
   }
+}
 
-  (function() {
-    if ('{{ section.settings.required }}' === 'true' && !localStorage.getItem('age_verified')) {
-      document.getElementById('ageVerifier').classList.remove('hidden');
-    }
-  })();
+document.addEventListener('DOMContentLoaded', function() {
+  const verifier = document.getElementById('age-verifier');
+  if (verifier && !localStorage.getItem('ageVerified')) {
+    verifier.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+});
 </script>
 
 {% schema %}
 {
   "name": "Age Verifier",
   "class": "section-age-verifier",
-  "tag": "div",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Age Verification" },
-    { "type": "textarea", "id": "message", "label": "Message", "default": "Are you over the age of 18?" },
-    { "type": "text", "id": "yesButton", "label": "Yes Button", "default": "Yes, I am" },
-    { "type": "text", "id": "noButton", "label": "No Button", "default": "No" },
-    { "type": "range", "id": "age_limit", "label": "Minimum Age", "min": 0, "max": 21, "default": 18, "step": 1 },
-    { "type": "checkbox", "id": "required", "label": "Required", "default": true }
+    { "type": "text", "id": "title", "label": "Title", "default": "Age Verification" },
+    { "type": "text", "id": "message", "label": "Message", "default": "You must be 18 years or older to enter this site." },
+    { "type": "checkbox", "id": "show_link", "label": "Show Learn More Link", "default": true },
+    { "type": "text", "id": "link_text", "label": "Link Text" }
   ],
   "presets": [{ "name": "Age Verifier" }]
 }
